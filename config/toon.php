@@ -1,13 +1,7 @@
 <?php
 
-namespace Sbsagar\Toon\Facades;
-
-use Illuminate\Support\Facades\Facade;
-
-class Toon extends Facade
-{
-    protected static function getFacadeAccessor()
-    {
-        return 'toon';
-    }
-}
+return [
+    'enabled' => true,
+    'compression' => 'gzip',
+    'max_tokens' => 4096,
+];
