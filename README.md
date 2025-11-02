@@ -1,98 +1,204 @@
-# sbsaga/toon  
-TOON converter for Laravel — compact, token‑efficient data format for AI prompts, with full **encode ↔ decode** support.
+# 🧠 TOON for Laravel  
+### Compact, Token-Efficient Data Format for AI Prompts & LLM Contexts
 
-## Why use it  
-When working with large language models (LLMs), prompt size matters. This package helps you:  
-- Convert rich data (arrays, JSON, objects) into a simplified “TOON” format to reduce token usage.  
-- Decode TOON back into a native PHP array, enabling bidirectional workflows.  
-- Estimate approximate token count of your TOON string, giving you insight into cost and usage.  
-- Seamlessly integrate into any Laravel (v9 → v12) application via service provider + facade + artisan command.
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/sbsaga/toon.svg?style=flat-square)](https://packagist.org/packages/sbsaga/toon)
+[![Total Downloads](https://img.shields.io/packagist/dt/sbsaga/toon.svg?style=flat-square)](https://packagist.org/packages/sbsaga/toon)
+[![License](https://img.shields.io/github/license/sbsaga/toon?style=flat-square)](LICENSE)
+![Laravel](https://img.shields.io/badge/Laravel-9%2B-orange?style=flat-square&logo=laravel)
+![PHP](https://img.shields.io/badge/PHP-8.1%2B-blue?style=flat-square&logo=php)
 
-## Key features  
-- ✅ **JSON / PHP → TOON**: Flatten nested data, produce compact representation (`items[n]{a,b}:` style tables)  
-- ✅ **TOON → PHP array**: Parse tabular blocks, nested structures, booleans, numbers, backslash‑escaping  
-- ✅ **Token estimation**: Quick heuristic for words + chars → estimated tokens  
-- ✅ **Laravel ready**: Auto‑discovery, facade `Toon::`, command `php artisan toon:convert`  
-- ✅ **CLI usage**: Encode or decode files via artisan or STDIN  
-- ✅ **Minimal dependencies**: PHP ≥ 8.1, `illuminate/support` v9‑12
+---
 
-## Installation  
+### ✨ Overview
+
+**TOON** is a Laravel package that converts complex JSON or PHP arrays into a **compact, human-readable, token-efficient format** — ideal for **AI prompts**, **LLM preprocessing**, or **debugging structured data**.
+
+It helps reduce token usage while preserving data structure clarity.
+
+---
+
+## 🚀 Installation
+
 ```bash
 composer require sbsaga/toon
 ```
 
-## Usage  
+> Laravel’s auto-discovery automatically registers the service provider and facade.
 
-### Laravel facade  
+---
+
+## ⚙️ Configuration (Optional)
+
+Publish the config file if you want to tweak behavior:
+
+```bash
+php artisan vendor:publish --provider="Sbsaga\Toon\ToonServiceProvider" --tag=config
+```
+
+This creates `config/toon.php`:
+
+```php
+return [
+    'enabled' => true,
+    'escape_style' => 'backslash',
+    'min_rows_to_tabular' => 2,
+    'max_preview_items' => 200,
+];
+```
+
+---
+
+## 🧠 Usage
+
+Use the **`Toon` facade** to convert data between JSON and TOON format.
+
+### ➤ Convert JSON → TOON
+
 ```php
 use Sbsaga\Toon\Facades\Toon;
 
-// Convert data to TOON format:
+$data = [
+    'user' => 'Sagar',
+    'message' => 'Hello, how are you?',
+    'tasks' => [
+        ['id' => 1, 'done' => false],
+        ['id' => 2, 'done' => true],
+    ],
+];
+
 $converted = Toon::convert($data);
 
-// Decode a TOON string back to PHP array:
-$decoded = Toon::decode($toonString);
-
-// Estimate tokens:
-$stats = Toon::estimateTokens($converted);
+echo $converted;
 ```
 
-### Routes example (for testing)  
+**Output (TOON format):**
+```
+user: Sagar
+message: Hello\, how are you?
+tasks:
+  items[2]{done,id}:
+    false,1
+    true,2
+```
+
+---
+
+### ➤ Convert TOON → JSON
+
 ```php
+$toonString = <<<TOON
+user: Sagar
+tasks:
+  items[2]{id,done}:
+    1,false
+    2,true
+TOON;
+
+$json = Toon::decode($toonString);
+
+print_r($json);
+```
+
+---
+
+### ➤ Estimate Tokens
+
+```php
+$stats = Toon::estimateTokens($converted);
+
+print_r($stats);
+```
+
+Output:
+```json
+{
+  "words": 20,
+  "chars": 182,
+  "tokens_estimate": 19
+}
+```
+
+---
+
+## 🧩 Artisan Command
+
+You can convert or decode files directly from the command line:
+
+```bash
+php artisan toon:convert storage/test.json
+php artisan toon:convert storage/test.toon --decode --pretty
+```
+
+You can also specify output:
+
+```bash
+php artisan toon:convert storage/test.json --output=storage/result.toon
+```
+
+---
+
+## 🧪 Testing Routes (Optional)
+
+Add this to `routes/web.php` to verify conversions interactively:
+
+```php
+use Illuminate\Support\Facades\Route;
+use Sbsaga\Toon\Facades\Toon;
+
 Route::get('/toon-test', function () {
     $data = [
         'message' => 'Hello, how are you?',
-        'user'    => 'Sagar',
-        'tasks'   => [
-            ['id'=>1,'done'=>false],
-            ['id'=>2,'done'=>true],
+        'user' => 'Sagar',
+        'tasks' => [
+            ['id' => 1, 'done' => false],
+            ['id' => 2, 'done' => true],
         ],
     ];
 
     $converted = Toon::convert($data);
-    $decoded   = Toon::decode($converted);
-    $stats     = Toon::estimateTokens($converted);
-    
+    $reverse = Toon::decode($converted);
+
     return response()->json([
-        'original' => $data,
-        'toon'     => $converted,
-        'decoded'  => $decoded,
-        'stats'    => $stats,
+        'original_json' => $data,
+        'converted_toon' => $converted,
+        'reverse_json' => $reverse,
+        'token_stats' => Toon::estimateTokens($converted),
     ]);
 });
 ```
 
-### CLI command  
-```bash
-# Encode JSON/text file to TOON:
-php artisan toon:convert storage/data.json --output=storage/data.toon
+---
 
-# Decode a TOON file:
-php artisan toon:convert storage/data.toon --decode --pretty
-```
+## 💡 Why TOON?
 
-## Coding style & escape rules  
-- Scalar values:  
-  - Booleans → `true` / `false`  
-  - Numbers remain unquoted (if pure numeric)  
-  - Strings: whitespace collapsed, commas `,`, colons `:`, newlines `\n`, backslashes `\\` are escaped via backslash style  
-- Tabular arrays (homogeneous object lists) are encoded as:  
-  ```text
-  items[2]{id,done}:
-    1,false
-    2,true
-  ```
-  and decoded accordingly.
-
-## Compatibility  
-- PHP >= 8.1  
-- Laravel packages: `illuminate/support` ^9.0 | ^10.0 | ^11.0 | ^12.0  
-- Works as a stand‑alone library as well as a Laravel package
-
-## Versioning  
-Following [SemVer](https://semver.org) — backwards‑compatible enhancements will increment minor version; breaking changes will increment major version.
+| Problem | TOON Solution |
+|----------|----------------|
+| JSON is verbose | Converts to a compact token-efficient format |
+| LLM context limited | Reduces token count before sending to GPT-style models |
+| Hard to read nested JSON | Converts into readable, indented key-value blocks |
+| Reversible | Supports decoding TOON → JSON |
 
 ---
 
-## License  
-MIT License. See [LICENSE](LICENSE) file for details.
+## 🧰 Supported Versions
+
+| Laravel | PHP | Package |
+|----------|-----|----------|
+| 9.x – 12.x | ≥ 8.1 | v1.0.8+ |
+
+---
+
+## 📜 License
+
+This package is open-source software licensed under the [MIT License](LICENSE).
+
+---
+
+### 🔗 Links
+- **GitHub:** [https://github.com/sbsaga/toon](https://github.com/sbsaga/toon)
+- **Packagist:** [https://packagist.org/packages/sbsaga/toon](https://packagist.org/packages/sbsaga/toon)
+- **Author:** [Sagar S. Bhedodkar](https://github.com/sbsaga)
+
+---
+
+> 🧠 *“Compress your prompts, not your ideas.” — TOON helps you talk to AI efficiently.*
