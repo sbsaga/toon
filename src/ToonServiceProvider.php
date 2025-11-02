@@ -1,6 +1,6 @@
 <?php
 
-namespace Sbsagar\Toon;
+namespace Sbsaga\Toon;
 
 use Illuminate\Support\ServiceProvider;
 

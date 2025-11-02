@@ -1,6 +1,6 @@
 <?php
 
-namespace Sbsagar\Toon\Converters;
+namespace sbsaga\Toon\Converters;
 
 class ToonConverter
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Sbsagar\Toon\Console;
+namespace Sbsaga\Toon\Console;
 
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
