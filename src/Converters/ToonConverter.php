@@ -5,6 +5,18 @@ namespace Sbsaga\Toon\Converters;
 
 use Sbsaga\Toon\Exceptions\ToonException;
 
+/**
+ * Class ToonConverter
+ *
+ * Converts arrays, objects, and JSON strings into TOON format.
+ * Provides clean, compact, and human-readable data serialization.
+ *
+ * Design goals:
+ *  - Preserve key order (no sorting)
+ *  - Keep TOON human-friendly and consistent
+ *  - Support both scalar and nested structures
+ *  - Safely escape special characters
+ */
 class ToonConverter
 {
     protected array $config;
@@ -19,19 +31,19 @@ class ToonConverter
     }
 
     /**
-     * Convert arbitrary input (json string, array, object, scalar) to TOON string.
+     * Convert arbitrary input (JSON string, array, object, scalar) to TOON string.
      */
     public function toToon(mixed $input): string
     {
-        // if string that looks like JSON try decode first
+        // If it's a JSON string, try decoding it first
         if (is_string($input) && $this->looksLikeJson($input)) {
             $decoded = json_decode($input, true);
             if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
                 return $this->valueToToon($decoded);
             }
-            // fallthrough -> treat as free text
         }
 
+        // Convert object to associative array
         if (is_object($input)) {
             $input = json_decode(json_encode($input), true);
         }
@@ -44,24 +56,23 @@ class ToonConverter
     }
 
     /**
-     * Recursive conversion for arrays and scalars.
+     * Recursive conversion for arrays and scalar values.
      */
     protected function valueToToon(mixed $value, int $depth = 0): string
     {
         $indent = str_repeat('  ', $depth);
 
         if (is_array($value)) {
-            // sequential array (list)
+            // Sequential (list) array
             if ($this->isSequentialArray($value)) {
-                // array of uniform objects -> tabular representation
+                // If array contains uniform objects, render as compact table
                 if ($this->isArrayOfUniformObjects($value)) {
                     return $this->arrayOfObjectsToToon($value, $depth);
                 }
 
-                // otherwise, render each item as a block line (nested)
+                // Otherwise, render each item line by line
                 $lines = [];
                 foreach ($value as $item) {
-                    // when item is scalar, render inline at increased depth
                     if ($this->isScalar($item)) {
                         $lines[] = $indent . $this->inlineScalar($item);
                     } else {
@@ -71,32 +82,31 @@ class ToonConverter
                 return implode("\n", $lines);
             }
 
-            // associative object
-            ksort($value, SORT_STRING);
+            // Associative object — preserve original key order
             $lines = [];
-            foreach ($value as $k => $v) {
-                $safeKey = $this->safeKey((string)$k);
-                if ($this->isScalar($v)) {
-                    $lines[] = $indent . "{$safeKey}: " . $this->inlineScalar($v);
+            foreach ($value as $key => $val) {
+                $safeKey = $this->safeKey((string) $key);
+                if ($this->isScalar($val)) {
+                    $lines[] = $indent . "{$safeKey}: " . $this->inlineScalar($val);
                 } else {
                     $lines[] = $indent . "{$safeKey}:";
-                    $lines[] = $this->valueToToon($v, $depth + 1);
+                    $lines[] = $this->valueToToon($val, $depth + 1);
                 }
             }
             return implode("\n", $lines);
         }
 
-        // fallback scalar
+        // Fallback: scalar value
         return $indent . $this->inlineScalar($value);
     }
 
     /**
-     * Create compact table block for uniform object list.
+     * Render a uniform array of associative objects into compact TOON table form.
      *
-     * Format:
-     * items[N]{field1,field2}:
-     *   v1,v2
-     *   v3,v4
+     * Format example:
+     * items[3]{id,name,active}:
+     *   1,John,true
+     *   2,Jane,false
      */
     protected function arrayOfObjectsToToon(array $arr, int $depth = 0): string
     {
@@ -104,47 +114,45 @@ class ToonConverter
             return str_repeat('  ', $depth) . 'items[0]{}:';
         }
 
-        $first = (array)$arr[0];
-        $fields = array_keys($first);
-        sort($fields, SORT_STRING);
+        $first = (array) $arr[0];
+        $fields = array_keys($first); // preserve field order as provided
         $indent = str_repeat('  ', $depth);
 
         $header = $indent . 'items[' . count($arr) . ']{' . implode(',', $fields) . '}:';
-
         $rows = [];
-        $max = min(count($arr), (int)$this->config['max_preview_items']);
+        $max = min(count($arr), (int) $this->config['max_preview_items']);
+
         for ($i = 0; $i < $max; $i++) {
-            $rowItems = [];
+            $row = [];
             foreach ($fields as $f) {
-                $rowItems[] = $this->inlineScalar($arr[$i][$f] ?? null);
+                $row[] = $this->inlineScalar($arr[$i][$f] ?? null);
             }
-            $rows[] = $indent . '  ' . implode(',', $rowItems);
+            $rows[] = $indent . '  ' . implode(',', $row);
         }
 
         return $header . "\n" . implode("\n", $rows);
     }
 
     /**
-     * Inline scalar formatting and escaping according to configured escape_style.
+     * Escape and format scalar values safely for TOON syntax.
      */
     protected function inlineScalar(mixed $v): string
     {
         if ($v === null) {
             return '';
         }
+
         if (is_bool($v)) {
             return $v ? 'true' : 'false';
         }
+
         if (is_int($v) || is_float($v)) {
             return (string) $v;
         }
 
-        $s = (string)$v;
-        // trim and collapse whitespace to single spaces (keeps TOON readable)
-        $s = trim(preg_replace('/\s+/', ' ', $s));
+        $s = trim(preg_replace('/\s+/', ' ', (string) $v));
 
         if ($this->config['escape_style'] === 'backslash') {
-            // escape backslash first, then special chars
             $s = str_replace('\\', '\\\\', $s);
             $s = str_replace(',', '\\,', $s);
             $s = str_replace(':', '\\:', $s);
@@ -152,24 +160,29 @@ class ToonConverter
             return $s;
         }
 
-        // default fallback: minimal escaping
-        $s = str_replace("\n", '\\n', $s);
-        return $s;
+        return str_replace("\n", '\\n', $s);
     }
 
+    /**
+     * Convert a plain text string to a TOON-safe line.
+     */
     protected function textToToon(string $text): string
     {
-        // treat as a single inline scalar
         return $this->inlineScalar($text);
     }
 
+    /**
+     * Sanitize a key name for TOON output.
+     */
     protected function safeKey(string $k): string
     {
-        // keep alnum, underscore, hyphen, dot; drop others; force lowercase for deterministic output
         $key = preg_replace('/[^A-Za-z0-9_\-\.]/', '', $k);
         return strtolower($key);
     }
 
+    /**
+     * Utility helpers
+     */
     protected function isScalar(mixed $v): bool
     {
         return is_null($v) || is_scalar($v);
@@ -186,9 +199,12 @@ class ToonConverter
         return array_values($arr) === $arr;
     }
 
+    /**
+     * Detect whether an array is a uniform list of objects with identical keys.
+     */
     protected function isArrayOfUniformObjects(array $arr): bool
     {
-        $min = (int)$this->config['min_rows_to_tabular'];
+        $min = (int) $this->config['min_rows_to_tabular'];
         if (count($arr) < $min) {
             return false;
         }
@@ -198,14 +214,15 @@ class ToonConverter
             if (!is_array($item)) {
                 return false;
             }
-            $k = array_keys($item);
-            sort($k, SORT_STRING);
+
+            $keys = array_keys($item); // preserve key order (no sorting)
             if ($firstKeys === null) {
-                $firstKeys = $k;
-            } elseif ($k !== $firstKeys) {
+                $firstKeys = $keys;
+            } elseif ($keys !== $firstKeys) {
                 return false;
             }
         }
+
         return true;
     }
 }
