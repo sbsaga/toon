@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sbsaga\Toon;
 
@@ -10,37 +11,40 @@ class Toon
     protected ToonConverter $converter;
     protected ToonDecoder $decoder;
 
-    public function __construct(ToonConverter $converter)
+    public function __construct(ToonConverter $converter, ?ToonDecoder $decoder = null)
     {
         $this->converter = $converter;
-        $this->decoder = new ToonDecoder();
+        $this->decoder = $decoder ?? new ToonDecoder([
+            'coerce_scalar_types' => $this->getConfig('coerce_scalar_types', true),
+            'escape_style' => $this->getConfig('escape_style', 'backslash'),
+        ]);
     }
 
-    /**
-     * Convert PHP value (array/object/string) to TOON format string.
-     */
     public function convert(mixed $input): string
     {
         return $this->converter->toToon($input);
     }
 
     /**
-     * Decode a TOON formatted string back to PHP array.
+     * Alias for convert when you want to explicitly create TOON format from array/object.
      */
+    public function encode(mixed $input): string
+    {
+        return $this->convert($input);
+    }
+
     public function decode(string $toon): array
     {
         return $this->decoder->fromToon($toon);
     }
 
     /**
-     * Estimate tokens (simple heuristic).
-     * This returns words and an estimated token count (approx).
+     * Estimate tokens (heuristic).
      */
     public function estimateTokens(string $toon): array
     {
         $words = preg_split('/\s+/', trim($toon)) ?: [];
         $chars = strlen($toon);
-        // rough heuristic: token ~ 4 chars (approx in many models), but use words * 0.75 as earlier plus char factor
         $tokenEstimate = max(1, (int) ceil(count($words) * 0.75 + $chars / 50));
 
         return [
@@ -48,5 +52,16 @@ class Toon
             'chars' => $chars,
             'tokens_estimate' => $tokenEstimate,
         ];
+    }
+
+    /**
+     * Helper to get config values when used inside Laravel (if available).
+     */
+    protected function getConfig(string $key, $default = null)
+    {
+        if (function_exists('config')) {
+            return config("toon.{$key}", $default);
+        }
+        return $default;
     }
 }
