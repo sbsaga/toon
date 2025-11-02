@@ -1,45 +1,47 @@
 # 🧠 TOON for Laravel  
-### Compact · Token-Efficient · Human-Readable Data Format for AI Prompts & LLM Contexts  
-
----
+### Compact · Token-Efficient · Human-Readable Data Format for AI Prompts & LLM Contexts
 
 <p align="center">
-  <img src="https://img.shields.io/packagist/v/sbsaga/toon.svg?style=flat-square" alt="Latest Version">
-  <img src="https://img.shields.io/packagist/dt/sbsaga/toon.svg?style=flat-square" alt="Downloads">
-  <img src="https://img.shields.io/github/license/sbsaga/toon?style=flat-square" alt="License">
-  <img src="https://img.shields.io/badge/Laravel-9%2B-orange?style=flat-square&logo=laravel" alt="Laravel">
-  <img src="https://img.shields.io/badge/PHP-8.1%2B-blue?style=flat-square&logo=php" alt="PHP">
+  <a href="https://packagist.org/packages/sbsaga/toon">
+    <img src="https://img.shields.io/packagist/v/sbsaga/toon.svg?style=for-the-badge&color=blueviolet" alt="Latest Version on Packagist">
+  </a>
+  <a href="https://packagist.org/packages/sbsaga/toon">
+    <img src="https://img.shields.io/packagist/dt/sbsaga/toon.svg?style=for-the-badge&color=brightgreen" alt="Total Downloads">
+  </a>
+  <img src="https://img.shields.io/badge/license-MIT-green?style=for-the-badge" alt="License: MIT">
+  <img src="https://img.shields.io/badge/Laravel-9%2B-orange?style=for-the-badge&logo=laravel" alt="Laravel 9+">
+  <img src="https://img.shields.io/badge/PHP-8.1%2B-blue?style=for-the-badge&logo=php" alt="PHP 8.1+">
 </p>
 
 ---
 
-## ✨ Overview  
+## ✨ Overview
 
-**TOON** is a Laravel package that converts complex arrays or JSON data into a **compact, token-efficient, human-readable format** — ideal for **AI prompts**, **LLM preprocessing**, and **structured debugging**.  
+**TOON** is a Laravel package that converts complex JSON or PHP arrays into a **compact, human-readable, token-efficient format** — ideal for **AI prompts**, **LLM context preprocessing**, and **debugging structured data**.
 
-It helps reduce token usage while keeping data structure clarity — saving you tokens and improving prompt interpretability.
+Reduce token usage while maintaining structure clarity — perfect for prompt optimization workflows.
 
 ---
 
-## ⚙️ Installation  
+## 🚀 Installation
 
 ```bash
 composer require sbsaga/toon
 ```
 
-Laravel’s auto-discovery automatically registers the service provider and facade.
+> Laravel’s auto-discovery automatically registers the service provider and facade.
 
 ---
 
-## 🔧 Optional Configuration  
+## ⚙️ Configuration
 
-You can publish the configuration file to customize TOON behavior:
+Publish configuration (optional):
 
 ```bash
 php artisan vendor:publish --provider="Sbsaga\Toon\ToonServiceProvider" --tag=config
 ```
 
-**`config/toon.php`:**
+Creates `config/toon.php`:
 
 ```php
 return [
@@ -52,9 +54,9 @@ return [
 
 ---
 
-## 🧠 Usage Examples  
+## 🧠 Usage
 
-### ➤ Convert JSON → TOON  
+### ➤ Convert JSON → TOON
 
 ```php
 use Sbsaga\Toon\Facades\Toon;
@@ -72,7 +74,7 @@ $converted = Toon::convert($data);
 echo $converted;
 ```
 
-**Output (TOON format):**
+**Output:**
 ```
 user: Sagar
 message: Hello\, how are you?
@@ -84,7 +86,7 @@ tasks:
 
 ---
 
-### ➤ Convert TOON → JSON  
+### ➤ Convert TOON → JSON
 
 ```php
 $toon = <<<TOON
@@ -102,7 +104,7 @@ print_r($json);
 
 ---
 
-### ➤ Estimate Tokens  
+### ➤ Estimate Tokens
 
 ```php
 $stats = Toon::estimateTokens($converted);
@@ -110,7 +112,7 @@ $stats = Toon::estimateTokens($converted);
 print_r($stats);
 ```
 
-**Output:**
+Output:
 ```json
 {
   "words": 20,
@@ -121,26 +123,23 @@ print_r($stats);
 
 ---
 
-## 🧰 Artisan CLI  
+## 🧩 Artisan Command
 
-Convert or decode directly from the command line:  
+Convert or decode directly from terminal:
 
 ```bash
 php artisan toon:convert storage/test.json
 php artisan toon:convert storage/test.toon --decode --pretty
 ```
 
-Save the result to a file:  
-
+Or specify output:
 ```bash
 php artisan toon:convert storage/test.json --output=storage/result.toon
 ```
 
 ---
 
-## 🧪 Quick Web Test (Optional)  
-
-Add this route in `routes/web.php` for instant browser testing:  
+## 🧪 Quick Test Route
 
 ```php
 use Illuminate\Support\Facades\Route;
@@ -168,37 +167,31 @@ Route::get('/toon-test', function () {
 });
 ```
 
-Then visit:  
-🔗 `http://your-app.test/toon-test`
-
 ---
 
-## 💡 Why Choose TOON  
+## 💡 Why TOON?
 
-| Problem | TOON Advantage |
+| Problem | TOON Solution |
 |----------|----------------|
-| JSON is verbose | Converts to a clean, compact, token-efficient text format |
-| LLM context is limited | Minimizes token usage for long structured prompts |
-| Hard-to-read nested JSON | Produces human-friendly indented structure |
-| Hard to reverse engineer | Easily decoded back to JSON |
+| JSON is verbose | Converts to a compact token-efficient format |
+| LLM context limited | Reduces token count before model input |
+| Hard to read nested JSON | Converts into structured readable format |
+| Need reversibility | Supports TOON → JSON decoding |
 
 ---
 
-## 🧩 Compatibility  
+## 🧰 Compatibility
 
-| Laravel | PHP | TOON Version |
-|----------|-----|--------------|
+| Laravel | PHP | Package |
+|----------|-----|----------|
 | 9.x – 12.x | ≥ 8.1 | v1.0.8+ |
 
 ---
 
-## 📜 License  
+## 📜 License
 
-Released under the **MIT License** — free for commercial and open-source use.
+Licensed under the **MIT License** — free for personal & commercial use.
 
 ---
 
-<p align="center">
-  <b>🧠 Compress your prompts, not your ideas.</b><br>
-  <sub>TOON helps you talk to AI efficiently — by making data beautifully minimal.</sub>
-</p>
+> 🧠 *“Compress your prompts, not your ideas.” — TOON helps you talk to AI efficiently.*
