@@ -24,8 +24,14 @@ class ToonServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/toon.php', 'toon');
 
-        $this->app->singleton('toon', function ($app) {
-            return new Toon(new ToonConverter(config('toon')));
+        $this->app->singleton('toon.converter', function ($app) {
+            return new ToonConverter(config('toon', []));
         });
+
+        $this->app->singleton('toon', function ($app) {
+            return new Toon($app->make('toon.converter'));
+        });
+
+        // Optional facade alias already declared via composer extra for Laravel auto discovery
     }
 }

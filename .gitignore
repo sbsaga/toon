@@ -1,2 +1,23 @@
+# Composer vendor
 /vendor/
+
+# Logs and caches
+/.idea/
+/.vscode/
+/storage/
+/node_modules/
+/npm-debug.log
+yarn-error.log
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Composer
 composer.lock
+
+# PHPUnit
+.phpunit.result.cache
+
+# Temporary
+*.swp
