@@ -452,3 +452,4 @@ Licensed under the **MIT License** — free for personal & commercial use.
 ---
 
 > 🧠 *“Compress your prompts, not your ideas.” — TOON helps you talk to AI efficiently.*
+
