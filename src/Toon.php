@@ -1,8 +1,8 @@
 <?php
 
-namespace sbsaga\Toon;
+namespace Sbsaga\Toon;
 
-use Sbsagar\Toon\Converters\ToonConverter;
+use Sbsaga\Toon\Converters\ToonConverter;
 
 class Toon
 {

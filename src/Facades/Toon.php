@@ -1,6 +1,6 @@
 <?php
 
-namespace sbsaga\Toon\Facades;
+namespace Sbsaga\Toon\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
