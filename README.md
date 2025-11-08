@@ -2,6 +2,10 @@
 ### Compact · Token-Efficient · Human-Readable Data Format for AI Prompts & LLM Contexts  
 
 <p align="center">
+  <img src="https://raw.githubusercontent.com/sbsaga/toon/main/assets/logo.webp" alt="TOON Logo" width="180">
+</p>
+
+<p align="center">
   <a href="https://packagist.org/packages/sbsaga/toon">
     <img src="https://img.shields.io/packagist/v/sbsaga/toon.svg?style=for-the-badge&color=blueviolet" alt="Latest Version on Packagist">
   </a>
@@ -23,9 +27,6 @@
 4. [Installation](#-installation)  
 5. [Configuration](#-configuration)  
 6. [Usage](#-usage)  
-   - [Convert JSON → TOON](#-convert-json--toon)  
-   - [Convert TOON → JSON](#-convert-toon--json)  
-   - [Estimate Tokens](#-estimate-tokens)  
 7. [Quick Benchmark Route](#-quick-benchmark-route)  
 8. [Analytics & Visualization](#-analytics--visualization)  
 9. [CLI Commands](#-artisan-commands)  
@@ -41,13 +42,13 @@
 
 **TOON for Laravel** — also known as **Token-Optimized Object Notation** — is a **Laravel-native AI optimization library** that converts large JSON or PHP arrays into a **compact, human-readable, and token-efficient format**.  
 
-It’s purpose-built for developers integrating **ChatGPT, Gemini, Claude, Mistral, or OpenAI APIs** — enabling you to:  
-- Save **tokens and cost**  
-- Simplify **prompt structure**  
-- Enhance **AI context efficiency**  
-- Maintain **readability and reversibility**  
+🧠 Designed for developers integrating **ChatGPT, Gemini, Claude, Mistral, or OpenAI APIs**, TOON helps you:  
+✅ Save tokens and reduce costs  
+✅ Simplify complex prompt structures  
+✅ Improve AI understanding and response quality  
+✅ Maintain clarity, reversibility, and human readability  
 
-> 🧠 Designed for **AI engineers**, **Laravel developers**, and **prompt optimization experts**.  
+> 💬 *“Compress your prompts, not your ideas.”*
 
 ---
 
@@ -55,13 +56,13 @@ It’s purpose-built for developers integrating **ChatGPT, Gemini, Claude, Mistr
 
 | Feature | Description |
 |----------|-------------|
-| 🔁 **Bidirectional Conversion** | Seamlessly convert JSON ⇄ TOON |
-| 🧩 **Readable & Compact** | YAML-like format but faster and leaner |
-| 💰 **Token-Efficient** | Save up to 70% tokens for AI requests |
-| ⚙️ **Laravel Integrated** | Auto-discovery, Facade, Artisan CLI |
-| 🔒 **Preserves Key Order** | Ensures consistent data ordering |
-| 📊 **Built-in Analytics** | Tracks token, character, and byte metrics |
-| 🌍 **AI & LLM Ready** | Perfect for OpenAI, Gemini, Claude, and Mistral |
+| 🔁 **Bidirectional Conversion** | Convert JSON ⇄ TOON effortlessly |
+| 🧩 **Readable & Compact** | YAML-like structure, faster and leaner |
+| 💰 **Token-Efficient** | Save up to 70% tokens on AI requests |
+| ⚙️ **Laravel Integrated** | Works with Facades, Service Providers, and Artisan |
+| 🔒 **Preserves Key Order** | Keeps consistent data ordering |
+| 📊 **Built-in Analytics** | Tracks tokens, chars, and byte usage |
+| 🌍 **AI & LLM Ready** | Ideal for OpenAI, Gemini, Claude, and Mistral |
 
 ---
 
@@ -72,7 +73,17 @@ It’s purpose-built for developers integrating **ChatGPT, Gemini, Claude, Mistr
 | Size (bytes) | 7,718 | 2,538 | **67.12% smaller** |
 | Tokens (est.) | 1,930 | 640 | **~66.8% fewer tokens** |
 
-> 💡 TOON consistently reduces token load by **60–75%**, improving **API cost-efficiency** and **prompt capacity**.
+### 📈 Visual Comparison  
+
+```
+JSON (7.7 KB)
+██████████████████████████████████████████████████████████████████████████
+
+TOON (2.5 KB)
+█████████████████
+```
+
+💡 **TOON** reduces token load by *60–75%*, improving **AI efficiency** and **prompt performance**.
 
 ---
 
@@ -207,7 +218,12 @@ Route::get('/toon-benchmark', function () {
 | `tokens_estimate` | Approx token count | 640 |
 | `compression_ratio` | Toon/JSON size ratio | 0.33 |
 
-> ⚡ TOON reduces tokens up to **70%**, making it one of the best **Laravel AI optimization packages**.
+🧠 **Visual Graph** (JSON vs TOON Efficiency)
+
+```
+| JSON: ██████████████████████████████████████████████████████████ 100%
+| TOON: ████████████ 33%
+```
 
 ---
 
@@ -251,36 +267,33 @@ TOON (2.5 KB)
 █████████████████
 ```
 
-🧠 **~67% reduction** with complete reversibility.
+🧠 **~67% reduction** with full data integrity.
 
 ---
 
 ## 🌐 SEO & AI Integration Keywords  
 
-> Optimized for AI + Laravel discoverability on GitHub & Packagist:  
-
 **Keywords:**  
 `laravel ai`, `ai for laravel`, `chatgpt laravel`, `laravel chatgpt`, `gemini laravel`, `laravel gemini`, `laravel anthropic`, `laravel mistral`, `laravel openai`, `openai laravel`, `laravel llm`, `llm laravel`, `ai laravel package`, `prompt compression`, `token optimizer`, `laravel json formatter`, `compact notation`, `laravel data compressor`, `token saver`, `laravel ai integration`, `sbsaga toon`, `laravel-toon`, `toon php`, `laravel ai toolkit`.
-
-> This ensures **sbsaga/toon** ranks higher for Laravel + AI + Token compression related searches.
 
 ---
 
 ## 💡 Contribution  
 
-Contributions are welcome!  
-
-1. Fork the repository  
-2. Create a feature branch (`git checkout -b feature/your-feature`)  
-3. Commit your changes (`git commit -m "Add new feature"`)  
-4. Push and open a Pull Request  
+Contributions are always welcome!  
+- Fork the repo  
+- Create a feature branch  
+- Commit & push your improvements  
+- Submit a Pull Request 🎉  
 
 ---
 
 ## 📜 License  
 
-Licensed under the **MIT License** — free for personal and commercial use.  
+Licensed under **MIT** — open for commercial & personal use.
 
 ---
 
-> 🧠 *“Compress your prompts, not your ideas.” — TOON helps you talk to AI efficiently.*  
+<p align="center">
+  <b>🧠 TOON for Laravel — Compress your prompts, not your ideas.</b>
+</p>
