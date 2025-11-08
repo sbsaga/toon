@@ -40,15 +40,15 @@
 
 ## ✨ Overview  
 
-**TOON for Laravel** — also known as **Token-Optimized Object Notation** — is a **Laravel-native AI optimization library** that converts large JSON or PHP arrays into a **compact, human-readable, and token-efficient format**.  
+**TOON for Laravel** — also known as **Token-Optimized Object Notation** — is a **Laravel-native AI data optimization library** that transforms large JSON or PHP arrays into a **compact, readable, and token-efficient format**.  
 
-🧠 Designed for developers integrating **ChatGPT, Gemini, Claude, Mistral, or OpenAI APIs**, TOON helps you:  
-✅ Save tokens and reduce costs  
+It’s crafted for developers working with **ChatGPT, Gemini, Claude, Mistral, or OpenAI APIs**, helping you:  
+✅ Save tokens and reduce API costs  
 ✅ Simplify complex prompt structures  
-✅ Improve AI understanding and response quality  
-✅ Maintain clarity, reversibility, and human readability  
+✅ Improve AI response quality and context understanding  
+✅ Maintain human readability and reversibility  
 
-> 💬 *“Compress your prompts, not your ideas.”*
+> 💬 *“Compress your prompts, not your ideas.”*  
 
 ---
 
@@ -56,13 +56,13 @@
 
 | Feature | Description |
 |----------|-------------|
-| 🔁 **Bidirectional Conversion** | Convert JSON ⇄ TOON effortlessly |
-| 🧩 **Readable & Compact** | YAML-like structure, faster and leaner |
-| 💰 **Token-Efficient** | Save up to 70% tokens on AI requests |
-| ⚙️ **Laravel Integrated** | Works with Facades, Service Providers, and Artisan |
-| 🔒 **Preserves Key Order** | Keeps consistent data ordering |
-| 📊 **Built-in Analytics** | Tracks tokens, chars, and byte usage |
-| 🌍 **AI & LLM Ready** | Ideal for OpenAI, Gemini, Claude, and Mistral |
+| 🔁 **Bidirectional Conversion** | Convert JSON ⇄ TOON with ease |
+| 🧩 **Readable & Compact** | YAML-like structure, human-friendly format |
+| 💰 **Token-Efficient** | Save up to 70% tokens on every AI prompt |
+| ⚙️ **Seamless Laravel Integration** | Built with Facades, Service Providers, and Artisan commands |
+| 🔒 **Preserves Key Order** | Ensures deterministic data output |
+| 📊 **Built-in Analytics** | Measure token, byte, and compression performance |
+| 🌍 **AI & LLM Ready** | Optimized for ChatGPT, Gemini, Claude, and Mistral models |
 
 ---
 
@@ -83,7 +83,7 @@ TOON (2.5 KB)
 █████████████████
 ```
 
-💡 **TOON** reduces token load by *60–75%*, improving **AI efficiency** and **prompt performance**.
+💡 **TOON** reduces token load by *60–75%*, improving **AI efficiency**, **cost**, and **response quality**.
 
 ---
 
@@ -93,7 +93,7 @@ TOON (2.5 KB)
 composer require sbsaga/toon
 ```
 
-> Laravel auto-discovers the Service Provider and Facade.  
+> Laravel automatically discovers the Service Provider and Facade.  
 
 ---
 
@@ -103,7 +103,7 @@ composer require sbsaga/toon
 php artisan vendor:publish --provider="Sbsaga\Toon\ToonServiceProvider" --tag=config
 ```
 
-Creates `config/toon.php`:
+Creates a configuration file at `config/toon.php`:
 
 ```php
 return [
@@ -212,13 +212,13 @@ Route::get('/toon-benchmark', function () {
 
 | Metric | Description | Example |
 |--------|--------------|---------|
-| `json_size_bytes` | Original JSON byte size | 7,718 |
-| `toon_size_bytes` | Compressed TOON byte size | 2,538 |
-| `saving_percent` | % space saved | 67.12% |
-| `tokens_estimate` | Approx token count | 640 |
-| `compression_ratio` | Toon/JSON size ratio | 0.33 |
+| `json_size_bytes` | Original JSON size | 7,718 |
+| `toon_size_bytes` | Optimized TOON size | 2,538 |
+| `saving_percent` | Space saved | 67.12% |
+| `tokens_estimate` | Estimated token count | 640 |
+| `compression_ratio` | Ratio (TOON/JSON) | 0.33 |
 
-🧠 **Visual Graph** (JSON vs TOON Efficiency)
+🧠 **Visual Graph (Efficiency Comparison)**  
 
 ```
 | JSON: ██████████████████████████████████████████████████████████ 100%
@@ -241,11 +241,11 @@ php artisan toon:convert storage/test.json --output=storage/result.toon
 
 | Use Case | Benefit |
 |-----------|----------|
-| 🤖 AI Prompt Engineering | Compress structured context for ChatGPT / LLMs |
-| 📉 Token Optimization | Save cost on OpenAI / Gemini / Claude |
-| 🧠 Data Preprocessing | Simplify and compress structured inputs |
-| 🧾 Logging & Debugging | More readable than JSON |
-| 🔍 Developer Tools | Ideal for compact previews and dashboards |
+| 🤖 **AI Prompt Engineering** | Compress structured data for ChatGPT / LLMs |
+| 📉 **Token Optimization** | Reduce token usage and API costs |
+| 🧠 **Data Preprocessing** | Streamline complex structured inputs |
+| 🧾 **Logging & Debugging** | More human-readable than JSON |
+| 🔍 **Developer Tools** | Perfect for previews and compact dashboards |
 
 ---
 
@@ -267,30 +267,30 @@ TOON (2.5 KB)
 █████████████████
 ```
 
-🧠 **~67% reduction** with full data integrity.
+🧠 **~67% size reduction** while retaining complete data accuracy.
 
 ---
 
 ## 🌐 SEO & AI Integration Keywords  
 
 **Keywords:**  
-`laravel ai`, `ai for laravel`, `chatgpt laravel`, `laravel chatgpt`, `gemini laravel`, `laravel gemini`, `laravel anthropic`, `laravel mistral`, `laravel openai`, `openai laravel`, `laravel llm`, `llm laravel`, `ai laravel package`, `prompt compression`, `token optimizer`, `laravel json formatter`, `compact notation`, `laravel data compressor`, `token saver`, `laravel ai integration`, `sbsaga toon`, `laravel-toon`, `toon php`, `laravel ai toolkit`.
+`laravel ai`, `ai for laravel`, `chatgpt laravel`, `laravel chatgpt`, `gemini laravel`, `laravel gemini`, `laravel anthropic`, `laravel mistral`, `laravel openai`, `openai laravel`, `laravel llm`, `llm laravel`, `ai laravel package`, `prompt compression`, `token optimizer`, `laravel json formatter`, `compact notation`, `laravel data compressor`, `token saver`, `laravel ai integration`, `sbsaga toon`, `laravel-toon`, `toon php`, `laravel ai toolkit`, `openai cost optimizer`, `laravel ai efficiency`, `chatgpt laravel toolkit`, `ai-ready laravel package`.
 
 ---
 
 ## 💡 Contribution  
 
-Contributions are always welcome!  
-- Fork the repo  
-- Create a feature branch  
-- Commit & push your improvements  
+Contributions are highly encouraged!  
+- Fork the repository  
+- Create a new feature branch  
+- Commit & push improvements  
 - Submit a Pull Request 🎉  
 
 ---
 
 ## 📜 License  
 
-Licensed under **MIT** — open for commercial & personal use.
+Licensed under the **MIT License** — free for both commercial and personal use.
 
 ---
 
