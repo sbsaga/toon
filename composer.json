@@ -1,20 +1,96 @@
 {
     "name": "sbsaga/toon",
-    "description": "TOON converter for Laravel — compact, token-efficient data format for AI prompts, supporting both directions (JSON ⇄ TOON).",
-    "keywords": ["laravel", "ai", "toon", "token-optimizer", "llm", "converter"],
+    "description": "🧠 TOON for Laravel — a compact, human-readable, and token-efficient data format for AI prompts & LLM contexts. Perfect for ChatGPT, Gemini, Claude, Mistral, and OpenAI integrations (JSON ⇄ TOON).",
+    "keywords": [
+        "laravel",
+        "laravel-package",
+        "laravel-ai",
+        "laravel-chatgpt",
+        "laravel-gemini",
+        "laravel-openai",
+        "laravel-anthropic",
+        "laravel-mistral",
+        "ai",
+        "ai-integration",
+        "ai-tools",
+        "ai-prompt",
+        "prompt",
+        "prompt-engineering",
+        "prompt-optimization",
+        "prompt-compression",
+        "context-optimizer",
+        "context-compression",
+        "token",
+        "token-efficient",
+        "token-optimizer",
+        "token-saver",
+        "llm",
+        "llm-tools",
+        "openai",
+        "chatgpt",
+        "claude",
+        "anthropic",
+        "gemini",
+        "mistral",
+        "gpt",
+        "gpt4",
+        "gpt3",
+        "ai-developer-tools",
+        "json",
+        "data",
+        "data-formatter",
+        "data-compression",
+        "data-transformer",
+        "compact-json",
+        "converter",
+        "formatter",
+        "parser",
+        "serialization",
+        "serialization-format",
+        "yaml-alternative",
+        "object-notation",
+        "human-readable-format",
+        "php",
+        "php8",
+        "laravel12",
+        "laravel11",
+        "laravel10",
+        "laravel9",
+        "sbsaga",
+        "toon",
+        "toon-laravel",
+        "laravel-toon",
+        "ai-for-laravel",
+        "chatgpt-for-laravel",
+        "gemini-for-laravel",
+        "openai-for-laravel",
+        "claude-for-laravel",
+        "llm-for-laravel",
+        "ai-laravel-package"
+    ],
     "type": "library",
     "license": "MIT",
+    "homepage": "https://github.com/sbsaga/toon",
+    "support": {
+        "issues": "https://github.com/sbsaga/toon/issues",
+        "source": "https://github.com/sbsaga/toon",
+        "docs": "https://github.com/sbsaga/toon#readme",
+        "chat": "https://github.com/sbsaga"
+    },
     "authors": [
         {
             "name": "Sagar S. Bhedodkar",
             "email": "sagarbhedodkar456@gmail.com",
-            "homepage": "https://github.com/sbsaga"
+            "homepage": "https://github.com/sbsaga",
+            "role": "Developer"
         }
     ],
-    "homepage": "https://github.com/sbsaga/toon",
     "require": {
         "php": ">=8.1",
         "illuminate/support": "^9.0|^10.0|^11.0|^12.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.0"
     },
     "autoload": {
         "psr-4": {
@@ -36,9 +112,17 @@
             }
         }
     },
+    "scripts": {
+        "test": "phpunit",
+        "post-autoload-dump": [
+            "@php artisan package:discover --ansi"
+        ]
+    },
+    "config": {
+        "sort-packages": true,
+        "preferred-install": "dist",
+        "optimize-autoloader": true
+    },
     "minimum-stability": "stable",
-    "prefer-stable": true,
-    "require-dev": {
-        "phpunit/phpunit": "^10.0"
-    }
+    "prefer-stable": true
 }
