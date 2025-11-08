@@ -295,5 +295,5 @@ Licensed under **MIT** — open for commercial & personal use.
 ---
 
 <p align="center">
-  <b>🧠 TOON for Laravel — Compress your prompts, not your ideas.</b>
+  <b>🧠 “Compress your prompts, not your ideas.” — TOON helps you talk to AI efficiently.</b>
 </p>
