@@ -38,29 +38,46 @@ use Illuminate\Support\Facades\Facade;
  * dd($data);
  * ```
  *
- * ## Purpose
+ * --------------------------------------------------------------------------
+ * PHPDoc for IDE Autocompletion
+ * --------------------------------------------------------------------------
+ *
+ * @method static string convert(array|string $data) Convert an array or JSON to TOON format
+ * @method static array decode(string $toonString) Decode a TOON string back to PHP array
+ * @method static array|int estimateTokens(string|array $data) Estimate token usage for a given data
+ *
+ * --------------------------------------------------------------------------
+ * Purpose
+ * --------------------------------------------------------------------------
+ *
  * - Simplifies the use of the underlying TOON service by offering Laravel-style syntax.
  * - Keeps controllers, console commands, and middleware clean and expressive.
  * - Encourages consistent usage of TOON conversion across all app layers.
  *
- * ## Internal Behavior
+ * --------------------------------------------------------------------------
+ * Internal Behavior
+ * --------------------------------------------------------------------------
+ *
  * - This facade resolves the `'toon'` binding from the Laravel service container.
  * - That binding is registered by the `ToonServiceProvider`.
  *
- * ## Example in a Controller
+ * --------------------------------------------------------------------------
+ * Example in a Controller
+ * --------------------------------------------------------------------------
+ *
  * ```php
  * public function showPrompt()
  * {
- *     // Vikas uses TOON to minimize tokens before sending a request to an LLM.
  *     $payload = ['question' => 'What is AI?', 'user' => 'Vitthal'];
  *     $compact = Toon::convert($payload);
- *
- *     // Store or send optimized data
  *     return response()->json(['toon' => $compact]);
  * }
  * ```
  *
- * ## Design Note
+ * --------------------------------------------------------------------------
+ * Design Note
+ * --------------------------------------------------------------------------
+ *
  * - This class intentionally contains no business logic.
  * - Its only job is to provide an elegant, static entry point to the TOON service.
  * - The underlying instance is managed by Laravel’s IoC container for testability.
