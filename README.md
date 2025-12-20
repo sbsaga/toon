@@ -63,6 +63,49 @@ It’s crafted for developers working with **ChatGPT, Gemini, Claude, Mistral, o
 | 🔒 **Preserves Key Order** | Ensures deterministic data output |
 | 📊 **Built-in Analytics** | Measure token, byte, and compression performance |
 | 🌍 **AI & LLM Ready** | Optimized for ChatGPT, Gemini, Claude, and Mistral models |
+| 🆕 **Complex Nested Array Support** | Fully supports deeply nested associative and indexed arrays |
+
+---
+
+## 🆕 Complex & Nested Array Support (v1.1.8+)
+
+TOON now supports **deeply nested and mixed data structures**, including:
+
+- Multi-level associative arrays  
+- Indexed collections inside objects  
+- Complex real-world structures like users, profiles, orders, metadata, and logs  
+
+This enhancement ensures that **no structural information is lost**, while still benefiting from TOON’s compact, token-efficient format.
+
+### Example: Nested Data Conversion
+
+```php
+$data = [
+    'user' => [
+        'id' => 101,
+        'active' => true,
+        'roles' => ['admin', 'editor'],
+        'profile' => [
+            'age' => 32,
+            'location' => [
+                'city' => 'Delhi',
+                'country' => 'India',
+            ],
+        ],
+    ],
+    'orders' => [
+        [
+            'order_id' => 'ORD-1001',
+            'amount' => 1998,
+            'status' => 'paid',
+        ],
+    ],
+];
+
+echo Toon::convert($data);
+```
+
+This structure remains **human-readable, reversible, and compact**, even with deep nesting.
 
 ---
 
@@ -244,7 +287,8 @@ php artisan toon:convert storage/test.json --output=storage/result.toon
 | 🤖 **AI Prompt Engineering** | Compress structured data for ChatGPT / LLMs |
 | 📉 **Token Optimization** | Reduce token usage and API costs |
 | 🧠 **Data Preprocessing** | Streamline complex structured inputs |
-| 🧾 **Logging & Debugging** | More human-readable than JSON |
+| 🧾 **Logging & Debugging** | Store compact, readable structured logs |
+| 🗄️ **Database Storage Optimization** | Reduce JSON storage size while preserving structure |
 | 🔍 **Developer Tools** | Perfect for previews and compact dashboards |
 
 ---
