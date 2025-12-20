@@ -260,6 +260,14 @@ class ToonConverter
             return (string) $v;
         }
 
+        if (is_array($v)) {
+            $parts = [];
+            foreach ($v as $key => $val) {
+                $parts[] = $key . ':' . $this->inlineScalar($val);
+            }
+            return implode(',', $parts);
+        }
+
         // Normalize whitespace and line breaks
         $s = trim(preg_replace('/\s+/', ' ', (string) $v));
 
