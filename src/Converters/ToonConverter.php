@@ -165,7 +165,7 @@ class ToonConverter
                         $lines[] = $indent . $this->inlineScalar($item);
                     } else {
                         // Recursively handle nested arrays or objects
-                        $lines[] = $indent . $this->valueToToon($item, $depth + 1);
+                        $lines[] = $this->valueToToon($item, $depth + 1);
                     }
                 }
                 return implode("\n", $lines);

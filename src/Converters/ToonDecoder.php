@@ -79,7 +79,10 @@ class ToonDecoder
         $stack = [ & $root ];
 
         // Stack that tracks indentation depth to handle nested mappings and arrays.
-        $indentStack = [ 0 ];
+        $indentStack = [ -1 ];
+
+        // Track keys at each level to detect when an object should pivot into a list.
+        $seenKeysStack = [ [] ];
 
         // Iterate through each line in the TOON input.
         foreach ($lines as $rawLine) {
@@ -96,10 +99,13 @@ class ToonDecoder
             $content = trim($line);
 
             // Reduce nesting if current indentation is less than the last stored level.
-            while (count($indentStack) > 0 && $indent < end($indentStack)) {
+            while (count($indentStack) > 1 && $indent <= end($indentStack)) {
                 array_pop($indentStack);
                 array_pop($stack);
+                array_pop($seenKeysStack);
             }
+
+            $current = & $stack[count($stack) - 1];
 
             /**
              * Handle compact tabular syntax:
@@ -115,7 +121,6 @@ class ToonDecoder
 
                 // Prepare a placeholder container for this TOON table block.
                 $tableContainer = ['__table__' => ['count' => $expectedCount, 'fields' => $fieldList, 'rows' => []]];
-                $current = & $stack[count($stack) - 1];
 
                 // Attach this table to the current structure (root or nested).
                 $current[] = $tableContainer;
@@ -123,17 +128,17 @@ class ToonDecoder
                 // Push new reference context for the rows block.
                 $stack[] = & $current[count($current) - 1];
                 $indentStack[] = $indent;
+                $seenKeysStack[] = [];
                 continue;
             }
 
             // Handle row entries within a TOON table.
-            $top = & $stack[count($stack) - 1];
-            if (isset($top['__table__'])) {
+            if (isset($current['__table__'])) {
                 $rowText = trim($content);
                 if ($rowText !== '') {
                     // Split fields using escaped CSV logic to preserve commas and special chars.
                     $rowCells = $this->splitCsvEscaped($rowText);
-                    $fields = $top['__table__']['fields'];
+                    $fields = $current['__table__']['fields'];
 
                     // Build associative array row: field => value
                     $rowObject = [];
@@ -142,7 +147,7 @@ class ToonDecoder
                     }
 
                     // Add parsed row into table rows.
-                    $top['__table__']['rows'][] = $rowObject;
+                    $current['__table__']['rows'][] = $rowObject;
                     continue;
                 }
             }
@@ -153,18 +158,32 @@ class ToonDecoder
              * - "settings:" → new nested block
              */
             if (preg_match('/^([A-Za-z0-9_\-\.]+):(?:\s*(.*))?$/', $content, $mm)) {
-                $key = $mm[1];
+                $key = strtolower($mm[1]);
                 $val = $mm[2] ?? null;
-                $current = & $stack[count($stack) - 1];
+
+                // Pivot Logic: If key repeats at same level (e.g. 'id'), convert parent to list.
+                if (in_array($key, $seenKeysStack[count($seenKeysStack)-1])) {
+                    array_pop($stack);
+                    $parent = & $stack[count($stack) - 1];
+                    $parentKey = array_key_last($parent);
+                    if (!isset($parent[$parentKey][0])) {
+                        $parent[$parentKey] = [$parent[$parentKey]];
+                    }
+                    $parent[$parentKey][] = [];
+                    $stack[] = & $parent[$parentKey][array_key_last($parent[$parentKey])];
+                    $current = & $stack[count($stack) - 1];
+                    $seenKeysStack[count($seenKeysStack)-1] = [];
+                }
+
+                $seenKeysStack[count($seenKeysStack)-1][] = $key;
 
                 // If value is empty, expect a nested block below this line.
-                if ($val === null || $val === '') {
-                    // Insert placeholder for nested section.
-                    $placeholderIndex = $this->attachPlaceholder($current, $key);
-
+                if ($val === null || trim($val) === '') {
+                    $current[$key] = [];
                     // Push new reference level to handle indented child elements.
-                    $stack[] = & $current[$placeholderIndex];
-                    $indentStack[] = $indent + 2;
+                    $stack[] = & $current[$key];
+                    $indentStack[] = $indent;
+                    $seenKeysStack[] = [];
                 } else {
                     // Simple scalar value line, coerce type and assign.
                     $current[$key] = $this->coerceValue($this->unescape($val));
@@ -172,53 +191,17 @@ class ToonDecoder
                 continue;
             }
 
-            // If a line does not fit any pattern, throw an exception.
-            // This strictness helps maintain TOON’s predictability in production.
+            // If a line does not fit any pattern, handle as sequential item or throw exception.
+            if ($indent > (end($indentStack) ?? -1)) {
+                $current[] = $this->coerceValue($this->unescape($content));
+                continue;
+            }
+
             throw new ToonException("Malformed TOON line at indent {$indent}: {$content}");
         }
 
         // Recursively finalize and normalize any embedded tables.
-        $root = $this->finalizeTables($root);
-
-        // If the root element itself is a table, return only its rows.
-        if ($this->isTableContainer($root)) {
-            return $this->extractTableRows($root);
-        }
-
-        // Return fully reconstructed PHP structure.
-        return $root;
-    }
-
-    /**
-     * Creates a placeholder entry for nested data structures.
-     * Used internally when parsing key-only lines such as `user:` or `config:`.
-     *
-     * Example:
-     * ```
-     * config:
-     *   api_key: 12345
-     * ```
-     *
-     * @return string|int The array key or index where the placeholder resides.
-     */
-    protected function attachPlaceholder(array &$container, string $key)
-    {
-        // Detect whether current container is associative.
-        $hasStringKey = false;
-        foreach ($container as $k => $_) {
-            if (!is_int($k)) { $hasStringKey = true; break; }
-        }
-
-        // For associative arrays, attach placeholder under the same key.
-        if ($hasStringKey || empty($container)) {
-            $container[$key] = [];
-            return $key;
-        }
-
-        // For sequential arrays, push a new associative element with the given key.
-        $container[] = [$key => []];
-        end($container);
-        return key($container);
+        return $this->finalizeTables($root);
     }
 
     /**
@@ -227,56 +210,16 @@ class ToonDecoder
      */
     protected function finalizeTables(array $node)
     {
-        if ($this->isTableContainer($node)) {
-            return $this->extractTableRows($node);
-        }
-
         foreach ($node as $k => $v) {
             if (is_array($v)) {
-                $node[$k] = $this->finalizeTables($v);
+                if (isset($v['__table__'])) {
+                    $node[$k] = $v['__table__']['rows'];
+                } else {
+                    $node[$k] = $this->finalizeTables($v);
+                }
             }
         }
-
         return $node;
-    }
-
-    /**
-     * Determines whether the given node is a TOON table container.
-     */
-    protected function isTableContainer(array $arr): bool
-    {
-        if (isset($arr['__table__']) && is_array($arr['__table__'])) {
-            return true;
-        }
-
-        // Handle single-element numeric arrays like `[ ['__table__' => ...] ]`
-        if (count($arr) === 1) {
-            $first = reset($arr);
-            if (is_array($first) && isset($first['__table__'])) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Extracts rows from a TOON table container.
-     */
-    protected function extractTableRows(array $container): array
-    {
-        if (isset($container['__table__'])) {
-            return $container['__table__']['rows'];
-        }
-
-        if (count($container) === 1) {
-            $first = reset($container);
-            if (isset($first['__table__'])) {
-                return $first['__table__']['rows'];
-            }
-        }
-
-        return $container;
     }
 
     /**
@@ -285,33 +228,8 @@ class ToonDecoder
      */
     protected function splitCsvEscaped(string $s): array
     {
-        $result = [];
-        $current = '';
-        $len = strlen($s);
-
-        for ($i = 0; $i < $len; $i++) {
-            $ch = $s[$i];
-
-            // Handle escape sequences (\, \:, \\)
-            if ($ch === '\\' && $i + 1 < $len) {
-                $current .= $s[$i + 1];
-                $i++;
-                continue;
-            }
-
-            // Split at commas unless escaped
-            if ($ch === ',') {
-                $result[] = $this->unescape($current);
-                $current = '';
-                continue;
-            }
-
-            $current .= $ch;
-        }
-
-        // Append last field
-        $result[] = $this->unescape($current);
-        return $result;
+        $result = preg_split('/(?<!\\\\),/', $s);
+        return array_map(fn($p) => $this->unescape(trim($p)), $result);
     }
 
     /**
@@ -320,10 +238,8 @@ class ToonDecoder
     protected function unescape(string $s): string
     {
         if ($this->config['escape_style'] === 'backslash') {
-            $s = str_replace(['\\n', '\:', '\,', '\\\\'], ["\n", ':', ',', '\\'], $s);
-            return $s;
+            return str_replace(['\\n', '\\:', '\\,', '\\\\'], ["\n", ':', ',', '\\'], $s);
         }
-
         return str_replace('\\n', "\n", $s);
     }
 
@@ -338,29 +254,17 @@ class ToonDecoder
     protected function coerceValue(string $s): mixed
     {
         $s = trim($s);
+        if ($s === '') return null;
 
         if ($this->config['coerce_scalar_types']) {
-            if ($s === '') {
-                return null;
-            }
-
             $lower = strtolower($s);
             if ($lower === 'true') return true;
             if ($lower === 'false') return false;
             if ($lower === 'null') return null;
-
-            // Integer pattern (without decimals)
-            if (preg_match('/^[+-]?\d+$/', $s)) {
-                return (int)$s;
-            }
-
-            // Floating-point detection (e.g., "3.14", "-2.5")
             if (is_numeric($s)) {
-                return (float)$s + 0;
+                return str_contains($s, '.') ? (float)$s : (int)$s;
             }
         }
-
-        // Fallback: leave as string
         return $s;
     }
 }
