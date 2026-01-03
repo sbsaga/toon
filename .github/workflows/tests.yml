@@ -1,4 +1,4 @@
-name: CI & Tests
+name: CI & Quality Checks
 
 on:
   push:
@@ -8,8 +8,11 @@ on:
   workflow_dispatch:
 
 jobs:
+  # -------------------------
+  # PHPUnit Tests
+  # -------------------------
   phpunit:
-    name: "PHPUnit Tests PHP ${{ matrix.php }}"
+    name: "PHPUnit (PHP ${{ matrix.php }})"
     runs-on: ubuntu-latest
 
     strategy:
@@ -18,11 +21,9 @@ jobs:
         php: ['8.1', '8.2', '8.3', '8.4']
 
     steps:
-      # Checkout the repository
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Setup PHP based on matrix
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -30,40 +31,126 @@ jobs:
           tools: composer:v2
           coverage: none
 
-      # Install dependencies (ignore composer.lock)
+      - name: Show environment info
+        run: |
+          php -v
+          composer -V
+
+      - name: Validate composer.json
+        run: composer validate --strict
+
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist
 
-      # Prepare output folder for logs
+      - name: Check PSR-4 autoload
+        run: composer dump-autoload --optimize --strict-psr
+
       - name: Prepare output folder
         run: mkdir -p tests/_output
 
-      # Run PHPUnit in readable format
       - name: Run PHPUnit
         run: vendor/bin/phpunit --testdox --colors=always
 
-      # Upload PHPUnit logs as artifact
       - name: Upload Test Results
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: phpunit-results-php${{ matrix.php }}
           path: tests/_output/
+          if-no-files-found: ignore
 
-  benchmark:
-    name: "Performance Benchmark PHP ${{ matrix.php }}"
+  # -------------------------
+  # Static Analysis (PHPStan)
+  # -------------------------
+  static-analysis:
+    name: "Static Analysis (PHPStan)"
     runs-on: ubuntu-latest
     needs: phpunit
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: composer:v2
+          coverage: none
+
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Run PHPStan (non-blocking)
+        run: |
+          if [ -f vendor/bin/phpstan ]; then
+            vendor/bin/phpstan analyse src --level=3
+          else
+            echo "PHPStan not installed, skipping"
+          fi
+
+  # -------------------------
+  # Code Style Check
+  # -------------------------
+  code-style:
+    name: "Code Style (PHP-CS-Fixer)"
+    runs-on: ubuntu-latest
+    needs: phpunit
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: composer:v2
+
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Run PHP-CS-Fixer (dry run)
+        run: |
+          if [ -f vendor/bin/php-cs-fixer ]; then
+            vendor/bin/php-cs-fixer fix --dry-run --diff
+          else
+            echo "PHP-CS-Fixer not installed, skipping"
+          fi
+
+  # -------------------------
+  # Security Audit
+  # -------------------------
+  security:
+    name: "Security Audit (Composer)"
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: composer:v2
+
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Composer security audit
+        run: composer audit || true
+
+  # -------------------------
+  # Performance Benchmarks
+  # -------------------------
+  benchmark:
+    name: "Benchmark (PHP ${{ matrix.php }})"
+    runs-on: ubuntu-latest
+    needs: phpunit
+
     strategy:
       matrix:
         php: ['8.1', '8.2', '8.3', '8.4']
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+      - uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
           extensions: mbstring
