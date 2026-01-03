@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+namespace Sbsaga\Toon\Tests;
+
 use PHPUnit\Framework\TestCase;
 use Sbsaga\Toon\Converters\ToonConverter;
 use Sbsaga\Toon\Converters\ToonDecoder;

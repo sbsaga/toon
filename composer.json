@@ -113,10 +113,7 @@
         }
     },
     "scripts": {
-        "test": "phpunit",
-        "post-autoload-dump": [
-            "@php artisan package:discover --ansi"
-        ]
+        "test": "phpunit"
     },
     "config": {
         "sort-packages": true,
