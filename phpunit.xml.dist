@@ -7,26 +7,12 @@
     failOnRisky="true"
     failOnWarning="true"
     colors="true"
-    verbose="true"
 >
     <testsuites>
         <testsuite name="Toon Test Suite">
             <directory>tests</directory>
         </testsuite>
     </testsuites>
-
-    <logging>
-        <!-- Human-readable testdox -->
-        <log type="testdox-text" target="tests/_output/testdox.txt"/>
-        <!-- Optional: JUnit XML for CI integration -->
-        <log type="junit" target="tests/_output/junit.xml"/>
-    </logging>
-
-    <coverage processUncoveredFiles="true">
-        <include>
-            <directory suffix=".php">src</directory>
-        </include>
-    </coverage>
 
     <php>
         <ini name="error_reporting" value="-1"/>
