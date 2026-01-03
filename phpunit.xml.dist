@@ -15,6 +15,13 @@
         </testsuite>
     </testsuites>
 
+    <logging>
+        <!-- Human-readable testdox -->
+        <log type="testdox-text" target="tests/_output/testdox.txt"/>
+        <!-- Optional: JUnit XML for CI integration -->
+        <log type="junit" target="tests/_output/junit.xml"/>
+    </logging>
+
     <coverage processUncoveredFiles="true">
         <include>
             <directory suffix=".php">src</directory>

@@ -34,6 +34,10 @@ jobs:
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist
 
+      # Prepare output folder for logs
+      - name: Prepare output folder
+        run: mkdir -p tests/_output
+
       # Run PHPUnit in readable format
       - name: Run PHPUnit
         run: vendor/bin/phpunit --testdox --colors=always
