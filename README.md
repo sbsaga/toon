@@ -4,18 +4,20 @@
 <p align="center">
   <img src="https://raw.githubusercontent.com/sbsaga/toon/main/assets/logo.webp" alt="TOON Logo" width="180">
 </p>
-
 <p align="center">
   <a href="https://packagist.org/packages/sbsaga/toon">
-    <img src="https://img.shields.io/packagist/v/sbsaga/toon.svg?style=for-the-badge&color=blueviolet" alt="Latest Version on Packagist">
+    <img src="https://img.shields.io/packagist/v/sbsaga/toon" alt="Latest Version">
   </a>
   <a href="https://packagist.org/packages/sbsaga/toon">
-    <img src="https://img.shields.io/packagist/dt/sbsaga/toon.svg?style=for-the-badge&color=brightgreen" alt="Total Downloads">
+    <img src="https://img.shields.io/packagist/dt/sbsaga/toon" alt="Total Downloads">
   </a>
-  <img src="https://img.shields.io/badge/license-MIT-green?style=for-the-badge" alt="License: MIT">
-  <img src="https://img.shields.io/badge/Laravel-9%2B-orange?style=for-the-badge&logo=laravel" alt="Laravel 9+">
-  <img src="https://img.shields.io/badge/PHP-8.1%2B-blue?style=for-the-badge&logo=php" alt="PHP 8.1+">
-  <img src="https://img.shields.io/badge/AI%20Ready-ChatGPT%2C%20Gemini%2C%20Claude%2C%20OpenAI-success?style=for-the-badge&logo=openai" alt="AI Ready">
+  <a href="https://github.com/sbsaga/toon">
+    <img src="https://img.shields.io/github/stars/sbsaga/toon" alt="GitHub stars">
+  </a>
+  <img src="https://img.shields.io/github/license/sbsaga/toon" alt="License">
+  <img src="https://img.shields.io/badge/Laravel-9%2B-orange" alt="Laravel 9+">
+  <img src="https://img.shields.io/badge/PHP-8.1%2B-blue" alt="PHP 8.1+">
+  <img src="https://img.shields.io/badge/AI-Ready-success" alt="AI Ready">
 </p>
 
 ---
