@@ -1,19 +1,21 @@
-name: Tests
+name: CI & Tests
 
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   phpunit:
+    name: "PHPUnit Tests PHP ${{ matrix.php }}"
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
-        php: [8.1, 8.2, 8.3, 8.4]
+        php: ['8.1', '8.2', '8.3', '8.4']
 
     steps:
       # Checkout the repository
@@ -28,10 +30,48 @@ jobs:
           tools: composer:v2
           coverage: none
 
-      # Install dependencies (no composer.lock needed)
+      # Install dependencies (ignore composer.lock)
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist
 
       # Run PHPUnit in readable format
       - name: Run PHPUnit
         run: vendor/bin/phpunit --testdox --colors=always
+
+      # Upload PHPUnit logs as artifact
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phpunit-results-php${{ matrix.php }}
+          path: tests/_output/
+
+  benchmark:
+    name: "Performance Benchmark PHP ${{ matrix.php }}"
+    runs-on: ubuntu-latest
+    needs: phpunit
+    strategy:
+      matrix:
+        php: ['8.1', '8.2', '8.3', '8.4']
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mbstring
+          coverage: none
+
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Run performance benchmarks
+        run: |
+          if [ -f ./vendor/bin/phpbench ]; then
+            ./vendor/bin/phpbench run --report=summary --progress=none
+          else
+            echo "phpbench not installed, skipping benchmarks"
+          fi
