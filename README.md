@@ -1,345 +1,203 @@
-# 🧠 TOON for Laravel  
-### Compact · Token-Efficient · Human-Readable Data Format for AI Prompts & LLM Contexts  
+# TOON for Laravel
+
+### Compact, human-readable, and token-efficient structured data for AI prompts, logs, and Laravel workflows
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/sbsaga/toon/main/assets/logo.webp" alt="TOON Logo" width="180">
+  <img src="https://raw.githubusercontent.com/sbsaga/toon/main/assets/logo.webp" alt="TOON logo" width="180">
 </p>
+
 <p align="center">
-  <a href="https://packagist.org/packages/sbsaga/toon">
-    <img src="https://img.shields.io/packagist/v/sbsaga/toon" alt="Latest Version">
-  </a>
-  <a href="https://packagist.org/packages/sbsaga/toon">
-    <img src="https://img.shields.io/packagist/dt/sbsaga/toon" alt="Total Downloads">
-  </a>
-  <a href="https://github.com/sbsaga/toon">
-    <img src="https://img.shields.io/github/stars/sbsaga/toon" alt="GitHub stars">
-  </a>
-  <img src="https://img.shields.io/github/license/sbsaga/toon" alt="License">
+  <a href="https://packagist.org/packages/sbsaga/toon"><img src="https://img.shields.io/packagist/v/sbsaga/toon" alt="Latest version"></a>
+  <a href="https://packagist.org/packages/sbsaga/toon"><img src="https://img.shields.io/packagist/dt/sbsaga/toon" alt="Total downloads"></a>
+  <a href="https://github.com/sbsaga/toon/actions/workflows/tests.yml"><img src="https://img.shields.io/github/actions/workflow/status/sbsaga/toon/tests.yml?branch=main&label=tests" alt="Tests"></a>
+  <a href="https://github.com/sbsaga/toon/blob/main/LICENSE"><img src="https://img.shields.io/github/license/sbsaga/toon" alt="License"></a>
   <img src="https://img.shields.io/badge/Laravel-9%2B-orange" alt="Laravel 9+">
   <img src="https://img.shields.io/badge/PHP-8.1%2B-blue" alt="PHP 8.1+">
-  <img src="https://img.shields.io/badge/AI-Ready-success" alt="AI Ready">
 </p>
 
----
+## What This Package Is
 
-## 📚 Table of Contents  
-1. [Overview](#-overview)  
-2. [Key Features](#-key-features)  
-3. [Benchmark & Analytics](#-real-world-benchmark)  
-4. [Installation](#-installation)  
-5. [Configuration](#-configuration)  
-6. [Usage](#-usage)  
-7. [Quick Benchmark Route](#-quick-benchmark-route)  
-8. [Analytics & Visualization](#-analytics--visualization)  
-9. [CLI Commands](#-artisan-commands)  
-10. [Integration Use Cases](#-integration-use-cases)  
-11. [Compatibility](#-compatibility)  
-12. [Compression Visualization](#-example-compression-visualization)  
-13. [SEO & AI Integration Keywords](#-seo--ai-integration-keywords)  
-14. [License](#-license)  
+TOON is a Laravel package for converting JSON or PHP arrays into a compact text format that stays readable to humans and efficient for AI-oriented workflows.
 
----
+It is useful when JSON is too noisy for:
 
-## ✨ Overview  
+- ChatGPT, Gemini, Claude, Mistral, and OpenAI prompt payloads
+- log snapshots and debug output
+- internal structured storage or fixture review
+- repeated API resource collections with the same fields
 
-**TOON for Laravel** — also known as **Token-Optimized Object Notation** — is a **Laravel-native AI data optimization library** that transforms large JSON or PHP arrays into a **compact, readable, and token-efficient format**.  
+## Why TOON Helps
 
-It’s crafted for developers working with **ChatGPT, Gemini, Claude, Mistral, or OpenAI APIs**, helping you:  
-✅ Save tokens and reduce API costs  
-✅ Simplify complex prompt structures  
-✅ Improve AI response quality and context understanding  
-✅ Maintain human readability and reversibility  
+JSON repeats a lot of structure. TOON removes much of that repetition while keeping the data understandable.
 
-> 💬 *“Compress your prompts, not your ideas.”*  
-
----
-
-## 🚀 Key Features  
-
-| Feature | Description |
-|----------|-------------|
-| 🔁 **Bidirectional Conversion** | Convert JSON ⇄ TOON with ease |
-| 🧩 **Readable & Compact** | YAML-like structure, human-friendly format |
-| 💰 **Token-Efficient** | Save up to 70% tokens on every AI prompt |
-| ⚙️ **Seamless Laravel Integration** | Built with Facades, Service Providers, and Artisan commands |
-| 🔒 **Preserves Key Order** | Ensures deterministic data output |
-| 📊 **Built-in Analytics** | Measure token, byte, and compression performance |
-| 🌍 **AI & LLM Ready** | Optimized for ChatGPT, Gemini, Claude, and Mistral models |
-| 🆕 **Complex Nested Array Support** | Fully supports deeply nested associative and indexed arrays |
-
----
-
-## 🆕 Complex & Nested Array Support (v1.1.8+)
-
-TOON now supports **deeply nested and mixed data structures**, including:
-
-- Multi-level associative arrays  
-- Indexed collections inside objects  
-- Complex real-world structures like users, profiles, orders, metadata, and logs  
-
-This enhancement ensures that **no structural information is lost**, while still benefiting from TOON’s compact, token-efficient format.
-
-### Example: Nested Data Conversion
+Example input:
 
 ```php
-$data = [
-    'user' => [
-        'id' => 101,
-        'active' => true,
-        'roles' => ['admin', 'editor'],
-        'profile' => [
-            'age' => 32,
-            'location' => [
-                'city' => 'Delhi',
-                'country' => 'India',
-            ],
-        ],
-    ],
-    'orders' => [
-        [
-            'order_id' => 'ORD-1001',
-            'amount' => 1998,
-            'status' => 'paid',
-        ],
+$payload = [
+    'project' => 'TOON',
+    'users' => [
+        ['id' => 1, 'name' => 'Alice', 'active' => true],
+        ['id' => 2, 'name' => 'Bob', 'active' => false],
     ],
 ];
-
-echo Toon::convert($data);
 ```
 
-This structure remains **human-readable, reversible, and compact**, even with deep nesting.
+Example TOON output:
 
----
-
-## 🧪 Real-World Benchmark  
-
-| Metric | JSON | TOON | Reduction |
-|---------|------|------|-----------|
-| Size (bytes) | 7,718 | 2,538 | **67.12% smaller** |
-| Tokens (est.) | 1,930 | 640 | **~66.8% fewer tokens** |
-
-### 📈 Visual Comparison  
-
-```
-JSON (7.7 KB)
-██████████████████████████████████████████████████████████████████████████
-
-TOON (2.5 KB)
-█████████████████
+```text
+project: TOON
+users:
+  items[2]{id,name,active}:
+    1,Alice,true
+    2,Bob,false
 ```
 
-💡 **TOON** reduces token load by *60–75%*, improving **AI efficiency**, **cost**, and **response quality**.
-
----
-
-## ⚙️ Installation  
+## Install in 60 Seconds
 
 ```bash
 composer require sbsaga/toon
 ```
 
-> Laravel automatically discovers the Service Provider and Facade.  
-
----
-
-## ⚙️ Configuration  
+Optional config publishing:
 
 ```bash
 php artisan vendor:publish --provider="Sbsaga\Toon\ToonServiceProvider" --tag=config
 ```
 
-Creates a configuration file at `config/toon.php`:
+## Laravel Usage
 
-```php
-return [
-    'enabled' => true,
-    'escape_style' => 'backslash',
-    'min_rows_to_tabular' => 2,
-    'max_preview_items' => 200,
-];
-```
-
----
-
-## 🧠 Usage  
-
-### ➤ Convert JSON → TOON  
+Facade usage:
 
 ```php
 use Sbsaga\Toon\Facades\Toon;
 
-$data = [
-    'user' => 'Sagar',
-    'message' => 'Hello, how are you?',
-    'tasks' => [
-        ['id' => 1, 'done' => false],
-        ['id' => 2, 'done' => true],
-    ],
-];
-
-$converted = Toon::convert($data);
-echo $converted;
+$toon = Toon::encode($payload);
+$decoded = Toon::decode($toon);
+$stats = Toon::estimateTokens($toon);
+$diff = Toon::diff($payload);
 ```
 
-**Output:**
-
-```
-user: Sagar
-message: Hello\, how are you?
-tasks:
-  items[2]{done,id}:
-    false,1
-    true,2
-```
-
----
-
-### ➤ Convert TOON → JSON  
+Global helpers:
 
 ```php
-$toon = <<<TOON
-user: Sagar
-tasks:
-  items[2]{id,done}:
-    1,false
-    2,true
-TOON;
-
-$json = Toon::decode($toon);
-print_r($json);
+$toon = toon_encode($payload);
+$decoded = toon_decode($toon);
+$diff = toon_diff($payload);
 ```
 
----
-
-### ➤ Estimate Tokens  
+Collection macro:
 
 ```php
-$stats = Toon::estimateTokens($converted);
-print_r($stats);
+$toonRows = collect($payload['users'])->toToon();
 ```
 
-**Output:**
+## Backward Compatibility First
 
-```json
-{
-  "words": 20,
-  "chars": 182,
-  "tokens_estimate": 19
-}
-```
+This release keeps `legacy` compatibility mode as the default so existing projects are less likely to break after upgrade.
 
----
+Default stable API:
 
-## 🧪 Quick Benchmark Route  
+- `Toon::convert()`
+- `Toon::encode()`
+- `Toon::decode()`
+- `Toon::estimateTokens()`
+
+New optional improvements:
+
+- `Toon::diff()`
+- `Toon::promptBlock()`
+- `Toon::validate()`
+- `Toon::contentType()`
+- `Toon::fileExtension()`
+- `toon_encode()`
+- `toon_decode()`
+- `toon_diff()`
+- `toon_prompt()`
+- `toon_validate()`
+- `Collection::toToon()`
+- `Sbsaga\Toon\Concerns\Toonable`
+- `strict_mode`
+- `delimiter`
+- `compatibility_mode`
+
+If you want safer nested round trips and cleaner decode behavior for new work, opt into modern mode:
 
 ```php
-use Illuminate\Support\Facades\Route;
-use Sbsaga\Toon\Facades\Toon;
-
-Route::get('/toon-benchmark', function () {
-    $json = json_decode(file_get_contents(storage_path('app/users.json')), true);
-    $jsonEncoded = json_encode($json, JSON_PRETTY_PRINT);
-    $toonEncoded = Toon::convert($json);
-
-    return response()->json([
-        'json_size_bytes' => strlen($jsonEncoded),
-        'toon_size_bytes' => strlen($toonEncoded),
-        'saving_percent' => round(100 - (strlen($toonEncoded) / strlen($jsonEncoded) * 100), 2),
-        'json_content' => $jsonEncoded,
-        'toon_content' => $toonEncoded,
-    ]);
-});
+// config/toon.php
+'compatibility_mode' => 'modern',
 ```
 
----
+## Reproducible Benchmark
 
-## 📊 Analytics & Visualization  
+The repository includes a synthetic benchmark fixture and runner:
 
-| Metric | Description | Example |
-|--------|--------------|---------|
-| `json_size_bytes` | Original JSON size | 7,718 |
-| `toon_size_bytes` | Optimized TOON size | 2,538 |
-| `saving_percent` | Space saved | 67.12% |
-| `tokens_estimate` | Estimated token count | 640 |
-| `compression_ratio` | Ratio (TOON/JSON) | 0.33 |
+- [`benchmarks/fixtures/paginated-users.json`](benchmarks/fixtures/paginated-users.json)
+- [`benchmarks/run.php`](benchmarks/run.php)
 
-🧠 **Visual Graph (Efficiency Comparison)**  
-
-```
-| JSON: ██████████████████████████████████████████████████████████ 100%
-| TOON: ████████████ 33%
-```
-
----
-
-## 🧰 Artisan Commands  
+Run it locally:
 
 ```bash
-php artisan toon:convert storage/test.json
-php artisan toon:convert storage/test.toon --decode --pretty
-php artisan toon:convert storage/test.json --output=storage/result.toon
+php benchmarks/run.php benchmarks/fixtures/paginated-users.json
 ```
 
----
+Current result for the included synthetic fixture:
 
-## 🧩 Integration Use Cases  
+| Metric | JSON | TOON |
+| --- | ---: | ---: |
+| Characters | 2622 | 1492 |
+| Estimated comparison tokens | 656 | 373 |
+| Character savings |  | 43.1% |
 
-| Use Case | Benefit |
-|-----------|----------|
-| 🤖 **AI Prompt Engineering** | Compress structured data for ChatGPT / LLMs |
-| 📉 **Token Optimization** | Reduce token usage and API costs |
-| 🧠 **Data Preprocessing** | Streamline complex structured inputs |
-| 🧾 **Logging & Debugging** | Store compact, readable structured logs |
-| 🗄️ **Database Storage Optimization** | Reduce JSON storage size while preserving structure |
-| 🔍 **Developer Tools** | Perfect for previews and compact dashboards |
+Notes:
 
----
+- the fixture data is synthetic and repository-generated
+- the token comparison is a lightweight heuristic for relative comparison
+- repeated scalar rows usually benefit most from TOON tables
 
-## 🧰 Compatibility  
+## Why Trust This Package
 
-| Laravel | PHP | Package Version |
-|----------|-----|----------------|
-| 9.x – 12.x | ≥ 8.1 | v1.1.0+ |
+- Laravel-native facade, service provider, helpers, and collection macro
+- backward-safe default compatibility mode for existing users
+- opt-in modern mode for cleaner nested-data behavior
+- delimiter and strict parsing controls for production use
+- benchmark fixture and docs included in the repo
+- test coverage for encoder, decoder, helpers, macros, compatibility modes, and edge cases
 
----
+## Documentation
 
-## 📉 Example Compression Visualization  
+- [Docs index](docs/README.md)
+- [Quickstart](docs/quickstart.md)
+- [Format and compatibility](docs/spec-compatibility.md)
+- [Syntax cheatsheet](docs/syntax-cheatsheet.md)
+- [LLM integration guide](docs/llm-integration.md)
+- [Media type and files](docs/media-type-and-files.md)
+- [When not to use TOON](docs/when-not-to-use-toon.md)
+- [Migration guide](docs/migration.md)
+- [Benchmarks](docs/benchmarks.md)
+- [Use cases](docs/use-cases.md)
+- [FAQ](docs/faq.md)
+- [Reference](docs/reference/README.md)
+- [Article index](docs/articles/README.md)
 
-```
-JSON (7.7 KB)
-██████████████████████████████████████████████████████████████████████████
+## More README Files
 
-TOON (2.5 KB)
-█████████████████
-```
+- [Benchmarks README](benchmarks/README.md)
+- [Examples README](examples/README.md)
+- [Articles README](docs/articles/README.md)
+- [Reference README](docs/reference/README.md)
 
-🧠 **~67% size reduction** while retaining complete data accuracy.
+## Example Packages and Scenarios
 
----
+- [AI prompt compression example](examples/laravel-ai-prompt-compression/README.md)
+- [Log payload storage example](examples/laravel-log-payload-storage/README.md)
+- [LLM response validation example](examples/llm-response-validation/README.md)
+- [HTTP TOON response example](examples/http-toon-response/README.md)
+- [Eloquent Toonable trait example](examples/eloquent-toonable/README.md)
 
-## 🌐 SEO & AI Integration Keywords  
+## Branding Asset
 
-**Keywords:**  
-`laravel ai`, `ai for laravel`, `chatgpt laravel`, `laravel chatgpt`, `gemini laravel`, `laravel gemini`, `laravel anthropic`, `laravel mistral`, `laravel openai`, `openai laravel`, `laravel llm`, `llm laravel`, `ai laravel package`, `prompt compression`, `token optimizer`, `laravel json formatter`, `compact notation`, `laravel data compressor`, `token saver`, `laravel ai integration`, `sbsaga toon`, `laravel-toon`, `toon php`, `laravel ai toolkit`, `openai cost optimizer`, `laravel ai efficiency`, `chatgpt laravel toolkit`, `ai-ready laravel package`.
+- [Social preview source](assets/social-preview.svg)
 
----
+## License
 
-## 💡 Contribution  
-
-Contributions are highly encouraged!  
-- Fork the repository  
-- Create a new feature branch  
-- Commit & push improvements  
-- Submit a Pull Request 🎉  
-
----
-
-## 📜 License  
-
-Licensed under the **MIT License** — free for both commercial and personal use.
-
----
-
-<p align="center">
-  <b>🧠 “Compress your prompts, not your ideas.” — TOON helps you talk to AI efficiently.</b>
-</p>
+Released under the MIT License.

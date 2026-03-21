@@ -7,127 +7,52 @@ use Sbsaga\Toon\Converters\ToonConverter;
 use Sbsaga\Toon\Converters\ToonDecoder;
 
 /**
- * Class Toon
- *
- * @package Sbsaga\Toon
- * @author Sagar
- *
- * --------------------------------------------------------------------------
- * The Core TOON Service
- * --------------------------------------------------------------------------
- *
- * This is the central class responsible for bridging conversion between
- * structured PHP/JSON data and the TOON (Token-Optimized Object Notation) format.
- *
- * It exposes simple public APIs:
- *  - `convert()` or `encode()` → for JSON/array → TOON conversion
- *  - `decode()` → for TOON → PHP/array conversion
- *  - `estimateTokens()` → lightweight heuristic token estimator
- *
- * The class acts as the glue between `ToonConverter` and `ToonDecoder`,
- * keeping configuration and operational logic consistent.
- *
- * --------------------------------------------------------------------------
- * ## Example: Basic Conversion Workflow
+ * Public service for TOON encoding, decoding, and token estimation.
  *
  * ```php
  * use Sbsaga\Toon\Facades\Toon;
  *
- * // Mannu wants to minimize AI prompt tokens
- * $data = [
- *     'user' => 'Tannu',
- *     'task' => 'Summarize 5 reports',
- *     'priority' => 'high',
- * ];
- *
- * // Convert array to TOON format
- * $toon = Toon::convert($data);
- *
- * // Example output:
- * // user: Tannu
- * // task: Summarize 5 reports
- * // priority: high
- *
- * // Decode TOON back into array
+ * $toon = Toon::encode(['user' => 'Alice', 'role' => 'admin']);
  * $decoded = Toon::decode($toon);
+ * $stats = Toon::estimateTokens($toon);
+ * $diff = Toon::diff(['user' => 'Alice']);
+ * $prompt = Toon::promptBlock(['user' => 'Alice']);
  * ```
- *
- * --------------------------------------------------------------------------
- * ## Design Philosophy
- *
- * - **Minimal overhead**: Uses lightweight heuristics and native PHP.
- * - **Human-readable**: Keeps output legible for developers like Surekha and Sunil.
- * - **LLM-ready**: Optimized for prompt engineering and token efficiency.
- * - **Safe defaults**: Automatically detects JSON, arrays, or scalar types.
- *
- * --------------------------------------------------------------------------
- * ## Real-World Example (Laravel Controller)
- *
- * ```php
- * public function optimizePrompt()
- * {
- *     // Vikas uses TOON to preprocess LLM context
- *     $payload = [
- *         'question' => 'Explain reinforcement learning',
- *         'author'   => 'Vitthal'
- *     ];
- *
- *     $compact = Toon::convert($payload);
- *     $stats = Toon::estimateTokens($compact);
- *
- *     return response()->json([
- *         'toon' => $compact,
- *         'stats' => $stats,
- *     ]);
- * }
- * ```
- *
- * --------------------------------------------------------------------------
  */
 class Toon
 {
-    /**
-     * The internal converter that handles PHP → TOON conversion.
-     *
-     * @var ToonConverter
-     */
+    /** Encoder used to serialize PHP data into TOON. */
     protected ToonConverter $converter;
 
-    /**
-     * The internal decoder that handles TOON → PHP conversion.
-     *
-     * @var ToonDecoder
-     */
+    /** Decoder used to parse TOON into PHP arrays. */
     protected ToonDecoder $decoder;
 
     /**
-     * Create a new TOON service instance.
+     * Create a new service instance.
      *
-     * This constructor accepts a `ToonConverter` and an optional `ToonDecoder`.
-     * If no decoder is supplied, it automatically creates one using Laravel config.
-     *
-     * @param ToonConverter $converter
-     * @param ToonDecoder|null $decoder
+     * @param ToonConverter $converter Converter implementation used for encoding.
+     * @param ToonDecoder|null $decoder Optional decoder instance. When omitted, a decoder is
+     *     created with runtime configuration values.
      */
     public function __construct(ToonConverter $converter, ?ToonDecoder $decoder = null)
     {
         $this->converter = $converter;
 
-        // If decoder not provided, construct one dynamically with app config values.
+        // Lazily instantiate a decoder so standalone usage still honors configured defaults.
         $this->decoder = $decoder ?? new ToonDecoder([
             'coerce_scalar_types' => $this->getConfig('coerce_scalar_types', true),
             'escape_style' => $this->getConfig('escape_style', 'backslash'),
+            'delimiter' => $this->getConfig('delimiter', 'comma'),
+            'strict_mode' => $this->getConfig('strict_mode', false),
+            'compatibility_mode' => $this->getConfig('compatibility_mode', 'legacy'),
         ]);
     }
 
     /**
-     * Convert arbitrary input into TOON format.
+     * Encode JSON, arrays, objects, or scalar values into TOON.
      *
-     * Accepts JSON strings, arrays, or objects.
-     * Automatically handles indentation, escaping, and compact table rendering.
-     *
-     * @param mixed $input JSON, array, or object
-     * @return string TOON representation
+     * @param mixed $input Data to encode.
+     * @return string Serialized TOON payload.
      */
     public function convert(mixed $input): string
     {
@@ -135,18 +60,10 @@ class Toon
     }
 
     /**
-     * Alias for `convert()` to make intent explicit when encoding.
+     * Alias of {@see convert()} for callers that prefer encode/decode terminology.
      *
-     * This method is semantically identical but provides more clarity when
-     * the developer explicitly wants to generate TOON.
-     *
-     * Example:
-     * ```php
-     * $toon = Toon::encode(['user' => 'Sunil', 'status' => 'active']);
-     * ```
-     *
-     * @param mixed $input
-     * @return string
+     * @param mixed $input Data to encode.
+     * @return string Serialized TOON payload.
      */
     public function encode(mixed $input): string
     {
@@ -154,13 +71,10 @@ class Toon
     }
 
     /**
-     * Decode a TOON string into an associative PHP array.
+     * Decode a TOON payload into PHP arrays.
      *
-     * Handles nested blocks, tabular structures, escaped values,
-     * and scalar coercion (e.g., "true" → true).
-     *
-     * @param string $toon
-     * @return array
+     * @param string $toon Serialized TOON payload.
+     * @return array Decoded PHP representation.
      */
     public function decode(string $toon): array
     {
@@ -168,25 +82,14 @@ class Toon
     }
 
     /**
-     * Estimate token usage of a given TOON string.
+     * Estimate token usage for a TOON payload using the package's original lightweight heuristic.
      *
-     * This method uses a heuristic model — combining approximate word count
-     * and character density — to estimate total token consumption.
-     *
-     * It helps developers like Surekha quickly gauge how compact their
-     * converted data is compared to raw JSON.
-     *
-     * Example:
-     * ```php
-     * $stats = Toon::estimateTokens($compactToon);
-     * // Returns: ['words' => 20, 'chars' => 180, 'tokens_estimate' => 22]
-     * ```
-     *
-     * @param string $toon
-     * @return array{words:int,chars:int,tokens_estimate:int}
+     * @param string $toon Serialized TOON payload.
+     * @return array{words:int,chars:int,tokens_estimate:int} Estimated counts for quick comparison.
      */
     public function estimateTokens(string $toon): array
     {
+        // Preserve the package's original dependency-free heuristic for backward compatibility.
         $words = preg_split('/\s+/', trim($toon)) ?: [];
         $chars = strlen($toon);
         $tokenEstimate = max(1, (int) ceil(count($words) * 0.75 + $chars / 50));
@@ -199,15 +102,108 @@ class Toon
     }
 
     /**
-     * Retrieve configuration values from Laravel's config system if available.
+     * Compare JSON and TOON size/token characteristics for a payload.
      *
-     * This method gracefully degrades for non-Laravel environments (e.g., CLI or testing).
-     * It ensures that default values like `escape_style` and `coerce_scalar_types`
-     * remain consistent even outside Laravel.
+     * @return array{
+     *     json_chars:int,
+     *     toon_chars:int,
+     *     saved_chars:int,
+     *     savings_percent:float,
+     *     json_tokens_estimate:int,
+     *     toon_tokens_estimate:int,
+     *     saved_tokens_estimate:int
+     * }
+     */
+    public function diff(mixed $input): array
+    {
+        $json = $this->toJsonString($input);
+        $toon = $this->convert($input);
+
+        $jsonTokenEstimate = $this->estimateComparableTokens($json);
+        $toonTokenEstimate = $this->estimateComparableTokens($toon);
+        $jsonChars = strlen($json);
+        $toonChars = strlen($toon);
+        $savedChars = max(0, $jsonChars - $toonChars);
+
+        return [
+            'json_chars' => $jsonChars,
+            'toon_chars' => $toonChars,
+            'saved_chars' => $savedChars,
+            'savings_percent' => $jsonChars > 0 ? round(($savedChars / $jsonChars) * 100, 2) : 0.0,
+            'json_tokens_estimate' => $jsonTokenEstimate,
+            'toon_tokens_estimate' => $toonTokenEstimate,
+            'saved_tokens_estimate' => max(0, $jsonTokenEstimate - $toonTokenEstimate),
+        ];
+    }
+
+    /**
+     * Wrap encoded TOON in a fenced code block for LLM prompts and docs.
      *
-     * @param string $key
-     * @param mixed $default
-     * @return mixed
+     * @param mixed $input Data to encode.
+     * @param string $fenceLabel Fence label to use in the markdown block.
+     * @return string Markdown code block containing encoded TOON.
+     */
+    public function promptBlock(mixed $input, string $fenceLabel = 'toon'): string
+    {
+        $label = trim($fenceLabel) !== '' ? trim($fenceLabel) : 'toon';
+
+        return "```{$label}\n" . $this->convert($input) . "\n```";
+    }
+
+    /**
+     * Validate a TOON payload without throwing an exception to the caller.
+     *
+     * @param string $toon Serialized TOON payload.
+     * @param bool $strict Whether strict table validation should be enabled.
+     * @return array{valid:bool,error:?string}
+     */
+    public function validate(string $toon, bool $strict = true): array
+    {
+        try {
+            $decoder = new ToonDecoder([
+                'coerce_scalar_types' => $this->getConfig('coerce_scalar_types', true),
+                'escape_style' => $this->getConfig('escape_style', 'backslash'),
+                'delimiter' => $this->getConfig('delimiter', 'comma'),
+                'strict_mode' => $strict,
+                'compatibility_mode' => $this->getConfig('compatibility_mode', 'legacy'),
+            ]);
+
+            $decoder->fromToon($toon);
+
+            return [
+                'valid' => true,
+                'error' => null,
+            ];
+        } catch (\Throwable $exception) {
+            return [
+                'valid' => false,
+                'error' => $exception->getMessage(),
+            ];
+        }
+    }
+
+    /**
+     * Return the conventional TOON content type for HTTP and file responses.
+     */
+    public function contentType(): string
+    {
+        return 'text/toon; charset=utf-8';
+    }
+
+    /**
+     * Return the conventional file extension for TOON documents.
+     */
+    public function fileExtension(): string
+    {
+        return 'toon';
+    }
+
+    /**
+     * Resolve a configuration value when Laravel's config helper is available.
+     *
+     * @param string $key Configuration key without the `toon.` prefix.
+     * @param mixed $default Fallback value for non-Laravel environments.
+     * @return mixed The resolved configuration value.
      */
     protected function getConfig(string $key, $default = null)
     {
@@ -215,5 +211,34 @@ class Toon
             return config("toon.{$key}", $default);
         }
         return $default;
+    }
+
+    /**
+     * Normalize input as JSON for comparison metrics.
+     */
+    protected function toJsonString(mixed $input): string
+    {
+        if (is_string($input)) {
+            $decoded = json_decode($input, true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                return (string) json_encode($decoded, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+            }
+
+            return (string) json_encode($input, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        }
+
+        if (is_object($input)) {
+            $input = json_decode(json_encode($input), true);
+        }
+
+        return (string) json_encode($input, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+    }
+
+    /**
+     * Estimate comparable token counts for JSON-vs-TOON reporting.
+     */
+    protected function estimateComparableTokens(string $payload): int
+    {
+        return max(1, (int) ceil(strlen($payload) / 4));
     }
 }

@@ -1,0 +1,161 @@
+{
+  "data": [
+    {
+      "id": 101,
+      "name": "User 101",
+      "email": "user101@example.test",
+      "role": "admin",
+      "active": true,
+      "plan": "enterprise",
+      "city": "Ahmedabad",
+      "country": "India",
+      "last_seen_at": "2026-03-20T10:15:00Z",
+      "requests_30d": 812
+    },
+    {
+      "id": 102,
+      "name": "User 102",
+      "email": "user102@example.test",
+      "role": "manager",
+      "active": true,
+      "plan": "growth",
+      "city": "Surat",
+      "country": "India",
+      "last_seen_at": "2026-03-20T09:44:00Z",
+      "requests_30d": 514
+    },
+    {
+      "id": 103,
+      "name": "User 103",
+      "email": "user103@example.test",
+      "role": "analyst",
+      "active": true,
+      "plan": "growth",
+      "city": "Bengaluru",
+      "country": "India",
+      "last_seen_at": "2026-03-20T08:55:00Z",
+      "requests_30d": 409
+    },
+    {
+      "id": 104,
+      "name": "User 104",
+      "email": "user104@example.test",
+      "role": "support",
+      "active": false,
+      "plan": "starter",
+      "city": "Kochi",
+      "country": "India",
+      "last_seen_at": "2026-03-19T21:08:00Z",
+      "requests_30d": 133
+    },
+    {
+      "id": 105,
+      "name": "User 105",
+      "email": "user105@example.test",
+      "role": "developer",
+      "active": true,
+      "plan": "growth",
+      "city": "Pune",
+      "country": "India",
+      "last_seen_at": "2026-03-20T11:03:00Z",
+      "requests_30d": 648
+    },
+    {
+      "id": 106,
+      "name": "User 106",
+      "email": "user106@example.test",
+      "role": "designer",
+      "active": true,
+      "plan": "starter",
+      "city": "Delhi",
+      "country": "India",
+      "last_seen_at": "2026-03-19T17:42:00Z",
+      "requests_30d": 287
+    },
+    {
+      "id": 107,
+      "name": "User 107",
+      "email": "user107@example.test",
+      "role": "developer",
+      "active": true,
+      "plan": "enterprise",
+      "city": "Mumbai",
+      "country": "India",
+      "last_seen_at": "2026-03-20T07:28:00Z",
+      "requests_30d": 924
+    },
+    {
+      "id": 108,
+      "name": "User 108",
+      "email": "user108@example.test",
+      "role": "support",
+      "active": false,
+      "plan": "starter",
+      "city": "Nagpur",
+      "country": "India",
+      "last_seen_at": "2026-03-18T14:20:00Z",
+      "requests_30d": 96
+    },
+    {
+      "id": 109,
+      "name": "User 109",
+      "email": "user109@example.test",
+      "role": "manager",
+      "active": true,
+      "plan": "enterprise",
+      "city": "Jaipur",
+      "country": "India",
+      "last_seen_at": "2026-03-20T05:51:00Z",
+      "requests_30d": 701
+    },
+    {
+      "id": 110,
+      "name": "User 110",
+      "email": "user110@example.test",
+      "role": "analyst",
+      "active": true,
+      "plan": "growth",
+      "city": "Chennai",
+      "country": "India",
+      "last_seen_at": "2026-03-20T06:19:00Z",
+      "requests_30d": 388
+    },
+    {
+      "id": 111,
+      "name": "User 111",
+      "email": "user111@example.test",
+      "role": "sales",
+      "active": true,
+      "plan": "growth",
+      "city": "Lucknow",
+      "country": "India",
+      "last_seen_at": "2026-03-19T19:35:00Z",
+      "requests_30d": 342
+    },
+    {
+      "id": 112,
+      "name": "User 112",
+      "email": "user112@example.test",
+      "role": "sales",
+      "active": false,
+      "plan": "starter",
+      "city": "Hyderabad",
+      "country": "India",
+      "last_seen_at": "2026-03-17T13:02:00Z",
+      "requests_30d": 121
+    }
+  ],
+  "meta": {
+    "current_page": 1,
+    "per_page": 12,
+    "total": 48,
+    "path": "/api/users",
+    "generated_at": "2026-03-21T09:00:00Z"
+  },
+  "links": {
+    "first": "/api/users?page=1",
+    "last": "/api/users?page=4",
+    "next": "/api/users?page=2",
+    "prev": null
+  }
+}
