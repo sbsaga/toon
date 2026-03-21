@@ -1,0 +1,19 @@
+<svg width="1280" height="640" viewBox="0 0 1280 640" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1280" height="640" fill="#0F172A"/>
+  <rect x="56" y="56" width="1168" height="528" rx="28" fill="#111827" stroke="#334155" stroke-width="2"/>
+  <circle cx="180" cy="150" r="54" fill="#F97316"/>
+  <path d="M150 150H210" stroke="white" stroke-width="16" stroke-linecap="round"/>
+  <path d="M180 120V180" stroke="white" stroke-width="16" stroke-linecap="round"/>
+  <text x="270" y="150" fill="white" font-family="Segoe UI, Arial, sans-serif" font-size="56" font-weight="700">TOON for Laravel</text>
+  <text x="270" y="205" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="26">Compact, readable structured data for AI prompts, logs, and developer workflows</text>
+
+  <rect x="96" y="276" width="1088" height="248" rx="20" fill="#020617" stroke="#1E293B" stroke-width="2"/>
+  <text x="136" y="332" fill="#38BDF8" font-family="Consolas, Menlo, monospace" font-size="26">project: TOON</text>
+  <text x="136" y="372" fill="#E2E8F0" font-family="Consolas, Menlo, monospace" font-size="26">users:</text>
+  <text x="136" y="412" fill="#A3E635" font-family="Consolas, Menlo, monospace" font-size="26">  items[2]{id,name,active}:</text>
+  <text x="136" y="452" fill="#E2E8F0" font-family="Consolas, Menlo, monospace" font-size="26">    1,Alice,true</text>
+  <text x="136" y="492" fill="#E2E8F0" font-family="Consolas, Menlo, monospace" font-size="26">    2,Bob,false</text>
+
+  <rect x="860" y="92" width="264" height="64" rx="32" fill="#1D4ED8"/>
+  <text x="912" y="132" fill="white" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="600">JSON ⇄ TOON</text>
+</svg>

@@ -6,108 +6,34 @@ namespace Sbsaga\Toon\Facades;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * Class Toon
+ * Laravel facade for the TOON service.
  *
- * @package Sbsaga\Toon\Facades
- * @author Sagar
- *
- * --------------------------------------------------------------------------
- * TOON Facade for Laravel
- * --------------------------------------------------------------------------
- *
- * This Facade provides a simple, expressive static interface to the core TOON
- * service within any Laravel application.
- *
- * It allows developers like Tannu, Mannu, or Surekha to easily encode or decode
- * data to and from TOON format without directly resolving the service container.
- *
- * ## Example Usage
  * ```php
  * use Sbsaga\Toon\Facades\Toon;
  *
- * // Convert an array to compact TOON format
- * $toon = Toon::convert([
- *     'user' => 'Sunil',
- *     'role' => 'admin',
- * ]);
- *
- * // Decode a TOON string back into a PHP array
- * $data = Toon::decode("user: Sunil\nrole: admin");
- *
- * // Pretty print or analyze in Laravel Tinker
- * dd($data);
+ * $toon = Toon::convert(['user' => 'Alice']);
+ * $data = Toon::decode($toon);
  * ```
  *
- * --------------------------------------------------------------------------
- * PHPDoc for IDE Autocompletion
- * --------------------------------------------------------------------------
- *
- * @method static string convert(array|string $data) Convert an array or JSON to TOON format
- * @method static array decode(string $toonString) Decode a TOON string back to PHP array
- * @method static array|int estimateTokens(string|array $data) Estimate token usage for a given data
- *
- * --------------------------------------------------------------------------
- * Purpose
- * --------------------------------------------------------------------------
- *
- * - Simplifies the use of the underlying TOON service by offering Laravel-style syntax.
- * - Keeps controllers, console commands, and middleware clean and expressive.
- * - Encourages consistent usage of TOON conversion across all app layers.
- *
- * --------------------------------------------------------------------------
- * Internal Behavior
- * --------------------------------------------------------------------------
- *
- * - This facade resolves the `'toon'` binding from the Laravel service container.
- * - That binding is registered by the `ToonServiceProvider`.
- *
- * --------------------------------------------------------------------------
- * Example in a Controller
- * --------------------------------------------------------------------------
- *
- * ```php
- * public function showPrompt()
- * {
- *     $payload = ['question' => 'What is AI?', 'user' => 'Vitthal'];
- *     $compact = Toon::convert($payload);
- *     return response()->json(['toon' => $compact]);
- * }
- * ```
- *
- * --------------------------------------------------------------------------
- * Design Note
- * --------------------------------------------------------------------------
- *
- * - This class intentionally contains no business logic.
- * - Its only job is to provide an elegant, static entry point to the TOON service.
- * - The underlying instance is managed by Laravel’s IoC container for testability.
- *
- * --------------------------------------------------------------------------
- * @see \Sbsaga\Toon\ToonServiceProvider
- * --------------------------------------------------------------------------
+ * @method static string convert(mixed $data) Encode data as TOON.
+ * @method static string encode(mixed $data) Alias of convert().
+ * @method static array decode(string $toonString) Decode TOON into PHP arrays.
+ * @method static array{words:int,chars:int,tokens_estimate:int} estimateTokens(string $data) Estimate token usage.
+ * @method static array{json_chars:int,toon_chars:int,saved_chars:int,savings_percent:float,json_tokens_estimate:int,toon_tokens_estimate:int,saved_tokens_estimate:int} diff(mixed $data) Compare JSON and TOON size/token savings.
+ * @method static string promptBlock(mixed $data, string $fenceLabel = 'toon') Wrap TOON in a fenced markdown block.
+ * @method static array{valid:bool,error:?string} validate(string $toonString, bool $strict = true) Validate TOON input without throwing.
+ * @method static string contentType() Return the conventional TOON content type.
+ * @method static string fileExtension() Return the conventional TOON file extension.
  */
 class Toon extends Facade
 {
     /**
-     * Get the registered name of the component from the service container.
-     *
-     * This method informs Laravel’s Facade system which binding to resolve
-     * when a static method is called on this facade.
-     *
-     * For example:
-     * ```php
-     * Toon::convert($data);
-     * ```
-     * is equivalent to:
-     * ```php
-     * app('toon')->convert($data);
-     * ```
+     * Get the service container binding resolved by this facade.
      *
      * @return string
      */
     protected static function getFacadeAccessor()
     {
-        // The service container binding name defined in ToonServiceProvider.
         return 'toon';
     }
 }

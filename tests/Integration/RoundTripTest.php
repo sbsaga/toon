@@ -7,37 +7,54 @@ use PHPUnit\Framework\TestCase;
 use Sbsaga\Toon\Converters\ToonConverter;
 use Sbsaga\Toon\Converters\ToonDecoder;
 
+/**
+ * Integration tests covering encoder and decoder interoperability.
+ */
 final class RoundTripTest extends TestCase
 {
-    public function testEncodeDecodePreservesMeaning(): void
+    public function testEncodeDecodePreservesNestedCollections(): void
     {
         $data = [
-            ['id' => 1, 'name' => 'Alice', 'meta' => ['x' => 1, 'y' => true]],
-            ['id' => 2, 'name' => 'Bob', 'meta' => ['x' => 2, 'y' => false]],
+            [
+                'id' => 1,
+                'name' => 'Alice',
+                'meta' => ['x' => 1, 'y' => true],
+                'roles' => ['admin', 'editor'],
+            ],
+            [
+                'id' => 2,
+                'name' => 'Bob',
+                'meta' => ['x' => 2, 'y' => false],
+                'roles' => ['author'],
+            ],
         ];
 
-        $conv = new ToonConverter(['min_rows_to_tabular' => 1]);
-        $dec  = new ToonDecoder();
+        $converter = new ToonConverter([
+            'min_rows_to_tabular' => 1,
+            'compatibility_mode' => 'modern',
+        ]);
+        $decoder = new ToonDecoder(['compatibility_mode' => 'modern']);
 
-        $toon = $conv->toToon($data);
-        $out  = $dec->fromToon($toon);
+        $toon = $converter->toToon($data);
+        $out = $decoder->fromToon($toon);
 
-        // Flatten the table array returned by decoder
-        $flattened = [];
-        foreach ($out as $item) {
-            if (is_array($item) && isset($item[0])) {
-                $flattened = array_merge($flattened, $item);
-            } elseif (is_array($item)) {
-                $flattened[] = $item;
-            }
-        }
+        $this->assertSame($data, $out);
+    }
 
-        $this->assertIsArray($flattened);
-        $this->assertCount(2, $flattened);
+    public function testLegacyDefaultKeepsPreviousTableDecodingShape(): void
+    {
+        $data = [
+            ['id' => 1, 'name' => 'Alice'],
+            ['id' => 2, 'name' => 'Bob'],
+        ];
 
-        $this->assertSame('Alice', $flattened[0]['name']);
-        $this->assertSame('x:1', $flattened[0]['meta']); // updated to match current package
-        $this->assertSame('Bob', $flattened[1]['name']);
-        $this->assertSame('x:2', $flattened[1]['meta']); // updated to match current package
+        $converter = new ToonConverter(['min_rows_to_tabular' => 1]);
+        $decoder = new ToonDecoder();
+
+        $toon = $converter->toToon($data);
+        $out = $decoder->fromToon($toon);
+
+        $this->assertSame('Alice', $out[0][0]['name']);
+        $this->assertSame('Bob', $out[0][1]['name']);
     }
 }

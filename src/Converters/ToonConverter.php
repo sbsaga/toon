@@ -3,108 +3,59 @@ declare(strict_types=1);
 
 namespace Sbsaga\Toon\Converters;
 
-use Sbsaga\Toon\Exceptions\ToonException;
-
 /**
- * ==========================================================================
- *  Class: ToonConverter
- * ==========================================================================
+ * Serializes PHP data structures into TOON.
  *
- * This is the **core conversion engine** of the TOON package.
+ * ```php
+ * $converter = new ToonConverter(['min_rows_to_tabular' => 1]);
  *
- * It transforms JSON, arrays, or objects into the compact **TOON format**,
- * a human-readable, token-efficient serialization format optimized for AI prompts.
- *
- * --------------------------------------------------------------------------
- * 🔍 Design Goals:
- * --------------------------------------------------------------------------
- *  • Preserve key order to maintain deterministic structure.
- *  • Keep TOON syntax human-friendly (for prompt engineers and developers).
- *  • Handle deeply nested structures recursively with clean indentation.
- *  • Auto-detect and render tabular blocks when appropriate.
- *  • Escape special characters safely while keeping output concise.
- *
- * --------------------------------------------------------------------------
- * 💡 Real-World Example:
- * --------------------------------------------------------------------------
- * Suppose Tannu has a JSON dataset she uses as a system prompt:
- *
- * ```json
- * [
- *   {"name": "Mannu", "age": 25, "active": true},
- *   {"name": "Surekha", "age": 28, "active": false}
- * ]
+ * echo $converter->toToon([
+ *     ['id' => 1, 'name' => 'Alice'],
+ *     ['id' => 2, 'name' => 'Bob'],
+ * ]);
  * ```
- *
- * When passed through `ToonConverter`, it becomes:
- *
- * ```
- * items[2]{name,age,active}:
- *   Mannu,25,true
- *   Surekha,28,false
- * ```
- *
- * This compact version is **70% smaller in token count**, ideal for use
- * in AI prompt pipelines or chat completion templates.
- *
- * Author:  Sagar S. Bhedodkar
- * License: MIT
- * Package: sbsaga/toon
  */
 class ToonConverter
 {
     /**
-     * Internal configuration array defining how conversion behaves.
+     * Runtime encoder configuration.
      *
-     * @var array
-     *  - min_rows_to_tabular → minimum list size before rendering as table.
-     *  - max_preview_items → limit on rows rendered for preview.
-     *  - escape_style → determines escaping mechanism (currently 'backslash').
+     * @var array{
+     *     min_rows_to_tabular:int,
+     *     max_preview_items:int,
+     *     escape_style:string,
+     *     delimiter:string,
+     *     compatibility_mode:string
+     * }
      */
     protected array $config;
 
     /**
-     * Constructor merges provided configuration with sensible defaults.
+     * Create a new converter instance.
      *
      * @param array $config Optional configuration overrides.
      */
     public function __construct(array $config = [])
     {
-        // Merge user-specified configuration with defaults.
+        // Merge caller-provided overrides with package defaults.
         $this->config = array_merge([
             'min_rows_to_tabular' => 2,
             'max_preview_items' => 100,
             'escape_style' => 'backslash',
+            'delimiter' => 'comma',
+            'compatibility_mode' => 'legacy',
         ], $config);
     }
 
     /**
-     * Convert arbitrary input (JSON string, array, object, scalar) into TOON format.
+     * Encode JSON strings, arrays, objects, or scalar values into TOON.
      *
-     * This is the high-level entry method used by the package.
-     * It automatically detects input type and delegates to the proper conversion routine.
-     *
-     * @param mixed $input The input value (can be JSON, array, object, or string).
-     * @return string TOON-formatted string output.
-     *
-     * Example:
-     * ```php
-     * $converter = new ToonConverter();
-     * echo $converter->toToon(['name' => 'Vikas', 'role' => 'developer']);
-     * ```
-     * Output:
-     * ```
-     * name: Vikas
-     * role: developer
-     * ```
+     * @param mixed $input Data to encode.
+     * @return string Serialized TOON payload.
      */
     public function toToon(mixed $input): string
     {
-        // ------------------------------------------------------------------
-        // Case 1: JSON string — attempt decoding first.
-        // ------------------------------------------------------------------
-        // Automatically detects JSON-like strings and converts them into arrays
-        // before proceeding. This allows flexible CLI and API inputs.
+        // Decode JSON input first so callers can pass raw payloads directly.
         if (is_string($input) && $this->looksLikeJson($input)) {
             $decoded = json_decode($input, true);
             if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
@@ -112,189 +63,195 @@ class ToonConverter
             }
         }
 
-        // ------------------------------------------------------------------
-        // Case 2: Convert objects to associative arrays recursively.
-        // ------------------------------------------------------------------
-        // Ensures that any stdClass or custom DTOs are handled uniformly.
+        // Normalize objects to associative arrays before recursive rendering.
         if (is_object($input)) {
             $input = json_decode(json_encode($input), true);
         }
 
-        // ------------------------------------------------------------------
-        // Case 3: Arrays or iterable structures — recursively convert.
-        // ------------------------------------------------------------------
+        // Traversables and arrays share the same recursive rendering path.
         if (is_array($input) || $input instanceof \Traversable) {
             return $this->valueToToon((array) $input);
         }
 
-        // ------------------------------------------------------------------
-        // Case 4: Fallback for scalars (numbers, strings, bool, null).
-        // ------------------------------------------------------------------
+        // Scalar values are emitted as a single inline TOON fragment.
         return $this->textToToon((string) $input);
     }
 
     /**
-     * Recursive conversion logic for arrays and scalars.
+     * Render a value at the requested indentation depth.
      *
-     * Handles nested structures, indentation depth, and type-specific rendering.
-     *
-     * @param mixed $value The value to convert (array, scalar, nested).
-     * @param int   $depth Current indentation level.
-     * @return string Formatted TOON representation.
+     * @param mixed $value Value to render.
+     * @param int $depth Current indentation depth.
+     * @return string Serialized TOON fragment.
      */
     protected function valueToToon(mixed $value, int $depth = 0): string
     {
         $indent = str_repeat('  ', $depth);
 
-        // ------------------------------------------------------------------
-        // Handle arrays
-        // ------------------------------------------------------------------
         if (is_array($value)) {
-            // Sequential arrays (indexed numerically)
+            // Sequential arrays are rendered either as tables or as one item per line.
             if ($this->isSequentialArray($value)) {
-                // If it’s a list of objects with identical keys, render as a table.
+                if ($value === []) {
+                    return '';
+                }
+
+                // Render uniform record lists as compact table blocks when every cell is safe inline.
                 if ($this->isArrayOfUniformObjects($value)) {
                     return $this->arrayOfObjectsToToon($value, $depth);
                 }
 
-                // Otherwise, render line by line (scalar or nested).
                 $lines = [];
                 foreach ($value as $item) {
                     if ($this->isScalar($item)) {
-                        // Inline scalar value (simple types)
+                        // Scalar items remain inline at the current indentation level.
                         $lines[] = $indent . $this->inlineScalar($item);
+                        continue;
+                    }
+
+                    if ($this->isLegacyMode()) {
+                        // Preserve the original expanded list style for legacy consumers.
+                        $nested = $this->valueToToon($item, $depth + 1);
+                        if ($nested !== '') {
+                            $lines[] = $nested;
+                        }
                     } else {
-                        // Recursively handle nested arrays or objects
-                        $lines[] = $this->valueToToon($item, $depth + 1);
+                        // Modern mode marks complex list items explicitly for safer decoding.
+                        $lines[] = $indent . '-';
+
+                        $nested = $this->valueToToon($item, $depth + 1);
+                        if ($nested !== '') {
+                            $lines[] = $nested;
+                        }
                     }
                 }
+
                 return implode("\n", $lines);
             }
 
-            // ------------------------------------------------------------------
-            // Associative arrays (key-value objects)
-            // ------------------------------------------------------------------
-            // Preserve key order exactly as given (no sorting).
+            // Associative arrays preserve input order and render as key/value pairs.
             $lines = [];
             foreach ($value as $key => $val) {
                 $safeKey = $this->safeKey((string) $key);
 
                 if ($this->isScalar($val)) {
                     $lines[] = $indent . "{$safeKey}: " . $this->inlineScalar($val);
-                } else {
-                    // Print key followed by nested structure
-                    $lines[] = $indent . "{$safeKey}:";
-                    $lines[] = $this->valueToToon($val, $depth + 1);
+                    continue;
+                }
+
+                // Nested structures are emitted on subsequent indented lines.
+                $lines[] = $indent . "{$safeKey}:";
+
+                $nested = $this->valueToToon($val, $depth + 1);
+                if ($nested !== '') {
+                    $lines[] = $nested;
                 }
             }
+
             return implode("\n", $lines);
         }
 
-        // ------------------------------------------------------------------
-        // Handle scalar values directly
-        // ------------------------------------------------------------------
+        // Non-array values are rendered directly at the current indentation level.
         return $indent . $this->inlineScalar($value);
     }
 
     /**
-     * Converts a uniform list of associative arrays into a compact TOON table.
+     * Render a uniform list of associative arrays as a TOON table.
      *
-     * Format Example:
-     * ```
-     * items[2]{id,name,active}:
-     *   1,Mannu,true
-     *   2,Surekha,false
+     * ```text
+     * items[2]{id,name}:
+     *   1,Alice
+     *   2,Bob
      * ```
      *
-     * @param array $arr   Array of associative arrays (uniform keys)
-     * @param int   $depth Indentation level for nested formatting
-     * @return string TOON-formatted table
+     * @param array $arr Uniform record list.
+     * @param int $depth Indentation level for nested rendering.
+     * @return string Serialized TOON table.
      */
     protected function arrayOfObjectsToToon(array $arr, int $depth = 0): string
     {
-        if (empty($arr)) {
-            // Edge case: empty list
-            return str_repeat('  ', $depth) . 'items[0]{}:';
-        }
-
-        // Preserve the key order from the first row (no sorting)
-        $first = (array) $arr[0];
-        $fields = array_keys($first);
         $indent = str_repeat('  ', $depth);
 
-        $header = $indent . 'items[' . count($arr) . ']{' . implode(',', $fields) . '}:';
+        // Preserve a valid table header even for empty collections.
+        if (empty($arr)) {
+            return $indent . 'items[0]{}:';
+        }
+
+        // The first row defines both field order and the table schema.
+        $first = (array) $arr[0];
+        $originalFields = array_keys($first);
+        $fields = $this->isLegacyMode()
+            ? $originalFields
+            : array_map(fn (string $field): string => $this->safeKey($field), $originalFields);
+        $separator = $this->isLegacyMode() ? ',' : $this->getDelimiter();
+
+        $header = $indent . 'items[' . count($arr) . ']{' . implode($separator, $fields) . '}:';
         $rows = [];
-        $max = min(count($arr), (int) $this->config['max_preview_items']);
+
+        // Modern mode always serializes the full collection to avoid silent truncation.
+        $max = count($arr);
+        if ($this->isLegacyMode()) {
+            $max = min($max, (int) $this->config['max_preview_items']);
+        }
 
         for ($i = 0; $i < $max; $i++) {
             $row = [];
-            foreach ($fields as $f) {
-                // Safely format each scalar field
-                $row[] = $this->inlineScalar($arr[$i][$f] ?? null);
+            foreach ($originalFields as $field) {
+                // Missing keys are rendered as null-equivalent empty cells.
+                $row[] = $this->inlineScalar($arr[$i][$field] ?? null);
             }
-            $rows[] = $indent . '  ' . implode(',', $row);
+            $rows[] = $indent . '  ' . implode($separator, $row);
         }
 
-        return $header . "\n" . implode("\n", $rows);
+        return $header . ($rows === [] ? '' : "\n" . implode("\n", $rows));
     }
 
     /**
-     * Safely escape scalar values for use within TOON syntax.
+     * Convert a scalar-like value into an inline TOON representation.
      *
-     * Handles commas, colons, slashes, and newline normalization.
-     *
-     * @param mixed $v Scalar value
-     * @return string Escaped and formatted representation
+     * @param mixed $value Value to render.
+     * @return string Escaped inline representation.
      */
-    protected function inlineScalar(mixed $v): string
+    protected function inlineScalar(mixed $value): string
     {
-        if ($v === null) {
+        // Null is represented as an empty value so keys can still be emitted.
+        if ($value === null) {
             return '';
         }
 
-        if (is_bool($v)) {
-            return $v ? 'true' : 'false';
+        // Booleans and numbers are written without additional escaping.
+        if (is_bool($value)) {
+            return $value ? 'true' : 'false';
         }
 
-        if (is_int($v) || is_float($v)) {
-            return (string) $v;
+        if (is_int($value) || is_float($value)) {
+            return (string) $value;
         }
 
-        if (is_array($v)) {
-            $parts = [];
-            foreach ($v as $key => $val) {
-                $parts[] = $key . ':' . $this->inlineScalar($val);
+        // Legacy mode preserves the package's original inline array flattening behavior.
+        if (is_array($value)) {
+            if ($this->isLegacyMode()) {
+                $parts = [];
+                foreach ($value as $key => $item) {
+                    $parts[] = (string) $key . ':' . $this->inlineScalar($item);
+                }
+
+                return implode(',', $parts);
             }
-            return implode(',', $parts);
+
+            return $this->escapeInlineString((string) json_encode(
+                $value,
+                JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
+            ));
         }
 
-        // Normalize whitespace and line breaks
-        $s = trim(preg_replace('/\s+/', ' ', (string) $v));
-
-        if ($this->config['escape_style'] === 'backslash') {
-            // Backslash escaping style for special characters
-            $s = str_replace('\\', '\\\\', $s);
-            $s = str_replace(',', '\\,', $s);
-            $s = str_replace(':', '\\:', $s);
-            $s = str_replace("\n", '\\n', $s);
-            return $s;
-        }
-
-        // Default fallback escape
-        return str_replace("\n", '\\n', $s);
+        return $this->escapeInlineString((string) $value);
     }
 
     /**
-     * Converts plain text to a TOON-safe single-line representation.
+     * Convert plain text to a TOON-safe inline value.
      *
-     * @param string $text Input string
-     * @return string Escaped TOON-safe text
-     *
-     * Example:
-     * ```
-     * Sunil's input: "Line one\nLine two"
-     * Output: "Line one\nLine two"
-     * ```
+     * @param string $text Text to encode.
+     * @return string Escaped TOON-safe text.
      */
     protected function textToToon(string $text): string
     {
@@ -302,70 +259,155 @@ class ToonConverter
     }
 
     /**
-     * Sanitize a key name for TOON output.
-     * Removes disallowed characters and enforces lowercase for consistency.
+     * Normalize a key name for TOON output.
      *
-     * @param string $k Raw key name
-     * @return string Safe key
+     * @param string $key Raw key name.
+     * @return string Normalized key.
      */
-    protected function safeKey(string $k): string
+    protected function safeKey(string $key): string
     {
-        $key = preg_replace('/[^A-Za-z0-9_\-\.]/', '', $k);
-        return strtolower($key);
+        if ($this->isLegacyMode()) {
+            // Restrict keys to the original TOON-safe character set used by the legacy decoder regex.
+            $normalized = preg_replace('/[^A-Za-z0-9_\-\.]/', '', $key) ?? '';
+            return strtolower($normalized);
+        }
+
+        $normalized = preg_replace('/\s+/', '_', trim($key)) ?? '';
+        $normalized = preg_replace('/[^A-Za-z0-9_\-\.]/', '', $normalized) ?? '';
+
+        return $normalized !== '' ? $normalized : 'field';
     }
 
-    // ----------------------------------------------------------------------
-    // Utility Helpers
-    // ----------------------------------------------------------------------
-
-    /** Check if a value is scalar or null. */
-    protected function isScalar(mixed $v): bool
+    /** Determine whether the value can be emitted inline without recursion. */
+    protected function isScalar(mixed $value): bool
     {
-        return is_null($v) || is_scalar($v);
+        return $value === null || is_scalar($value);
     }
 
-    /** Detects whether a given string is likely valid JSON. */
-    protected function looksLikeJson(string $s): bool
+    /** Detect whether the input appears to be a JSON document. */
+    protected function looksLikeJson(string $value): bool
     {
-        $s = trim($s);
-        return $s !== '' && (str_starts_with($s, '{') || str_starts_with($s, '['));
+        $value = trim($value);
+        return $value !== '' && (str_starts_with($value, '{') || str_starts_with($value, '['));
     }
 
-    /** Determine if an array is sequential (non-associative). */
-    protected function isSequentialArray(array $arr): bool
+    /** Determine whether the array is a zero-based list. */
+    protected function isSequentialArray(array $array): bool
     {
-        return array_values($arr) === $arr;
+        return array_values($array) === $array;
     }
 
     /**
-     * Determines whether the array is a uniform list of associative arrays
-     * (i.e., same keys in all rows) — suitable for TOON tabular rendering.
+     * Determine whether the array can be emitted as a uniform TOON table.
      *
-     * @param array $arr Input array
-     * @return bool True if uniform
+     * All rows must be associative arrays with the same keys in the same order.
+     * Modern mode also requires every cell to be safely representable inline.
+     *
+     * @param array $array Candidate list.
+     * @return bool True when the list is suitable for tabular output.
      */
-    protected function isArrayOfUniformObjects(array $arr): bool
+    protected function isArrayOfUniformObjects(array $array): bool
     {
+        // Very small lists are intentionally left in expanded form for readability.
         $min = (int) $this->config['min_rows_to_tabular'];
-        if (count($arr) < $min) {
+        if (count($array) < $min) {
             return false;
         }
 
         $firstKeys = null;
-        foreach ($arr as $item) {
-            if (!is_array($item)) {
+        foreach ($array as $item) {
+            // Only associative arrays are eligible for tabular rendering.
+            if (!is_array($item) || $this->isSequentialArray($item)) {
                 return false;
             }
 
-            // Maintain original key order
+            // Field order must match exactly so row values stay aligned with the header.
             $keys = array_keys($item);
             if ($firstKeys === null) {
                 $firstKeys = $keys;
             } elseif ($keys !== $firstKeys) {
                 return false;
             }
+
+            // Modern mode avoids table output when a cell would require nested structure.
+            if (!$this->isLegacyMode() && !$this->rowContainsOnlyInlineValues($item)) {
+                return false;
+            }
         }
 
         return true;
+    }
+
+    /**
+     * Determine whether every row value can be emitted inline without data loss.
+     *
+     * @param array $row Candidate table row.
+     * @return bool True when every value is scalar or null.
+     */
+    protected function rowContainsOnlyInlineValues(array $row): bool
+    {
+        foreach ($row as $value) {
+            if (!$this->isScalar($value)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Escape inline string content according to the configured TOON rules.
+     *
+     * @param string $value Raw inline string.
+     * @return string Escaped inline string.
+     */
+    protected function escapeInlineString(string $value): string
+    {
+        $value = str_replace(["\r\n", "\r"], "\n", $value);
+
+        if ($this->isLegacyMode()) {
+            $value = trim(preg_replace('/\s+/', ' ', $value) ?? $value);
+        }
+
+        if ($this->config['escape_style'] !== 'backslash') {
+            return str_replace("\n", '\\n', $value);
+        }
+
+        $delimiter = $this->isLegacyMode() ? ',' : $this->getDelimiter();
+
+        // Escape structural characters so inline text does not break parsing.
+        $value = str_replace('\\', '\\\\', $value);
+        $value = str_replace(':', '\\:', $value);
+
+        if ($delimiter === "\t") {
+            $value = str_replace("\t", '\\t', $value);
+        } else {
+            $value = str_replace($delimiter, '\\' . $delimiter, $value);
+        }
+
+        return str_replace("\n", '\\n', $value);
+    }
+
+    /**
+     * Resolve the configured table delimiter.
+     *
+     * @return string Single-character delimiter used in TOON tables.
+     */
+    protected function getDelimiter(): string
+    {
+        return match ((string) $this->config['delimiter']) {
+            'comma' => ',',
+            'pipe' => '|',
+            'tab' => "\t",
+            default => (string) $this->config['delimiter'] !== '' ? (string) $this->config['delimiter'] : ',',
+        };
+    }
+
+    /**
+     * Determine whether the converter should preserve legacy output behavior.
+     */
+    protected function isLegacyMode(): bool
+    {
+        return strtolower((string) $this->config['compatibility_mode']) === 'legacy';
     }
 }
