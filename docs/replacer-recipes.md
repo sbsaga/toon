@@ -1,5 +1,9 @@
 # Replacer Recipes
 
+<p align="center">
+  <img src="assets/diagrams/replacer_pipeline.svg" alt="Replacer and Redaction Pipeline" width="700">
+</p>
+
 Replacers let you transform data before TOON encoding without changing your original payload.
 
 ## Signature

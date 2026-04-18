@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" font-family="'Segoe UI', system-ui, -apple-system, sans-serif">
+  <defs>
+    <filter id="vSh"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.3"/></filter>
+  </defs>
+
+  <rect width="800" height="500" rx="12" fill="#1a1a2e"/>
+
+  <!-- Title -->
+  <text x="400" y="38" text-anchor="middle" fill="#ffffff" font-size="20" font-weight="700">Validation &amp; Strict Mode Flow</text>
+  <text x="400" y="58" text-anchor="middle" fill="#8b8fa3" font-size="12">How TOON validates imported data before processing</text>
+
+  <!-- Input -->
+  <rect x="300" y="80" width="200" height="45" rx="10" fill="#4361EE" filter="url(#vSh)"/>
+  <text x="400" y="107" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">📄 Incoming TOON Data</text>
+
+  <line x1="400" y1="125" x2="400" y2="150" stroke="#555" stroke-width="2"/>
+  <polygon points="400,153 395,143 405,143" fill="#555"/>
+
+  <!-- Validate -->
+  <rect x="280" y="155" width="240" height="50" rx="10" fill="#EF476F" filter="url(#vSh)"/>
+  <text x="400" y="178" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">🔍 Toon::validate($toon, strict: true)</text>
+  <text x="400" y="195" text-anchor="middle" fill="#ffffffaa" font-size="10">Check structure, row counts, field counts</text>
+
+  <!-- Branch -->
+  <line x1="310" y1="205" x2="200" y2="240" stroke="#EF476F" stroke-width="2"/>
+  <line x1="490" y1="205" x2="600" y2="240" stroke="#00C9A7" stroke-width="2"/>
+
+  <!-- Invalid path -->
+  <text x="230" y="232" fill="#EF476F" font-size="11" font-weight="700">❌ Invalid</text>
+
+  <rect x="100" y="245" width="200" height="90" rx="10" fill="#EF476F" opacity="0.15" stroke="#EF476F" stroke-width="1"/>
+  <text x="200" y="272" text-anchor="middle" fill="#EF476F" font-size="12" font-weight="700">Validation Failed</text>
+  <text x="200" y="292" text-anchor="middle" fill="#8b8fa3" font-size="10">['valid' =&gt; false,</text>
+  <text x="200" y="306" text-anchor="middle" fill="#8b8fa3" font-size="10"> 'error' =&gt; 'Row count...']</text>
+  <text x="200" y="326" text-anchor="middle" fill="#EF476F" font-size="10" font-weight="600">→ Throw exception / reject</text>
+
+  <!-- Valid path -->
+  <text x="560" y="232" fill="#00C9A7" font-size="11" font-weight="700">✅ Valid</text>
+
+  <rect x="500" y="245" width="200" height="50" rx="10" fill="#00C9A7" opacity="0.15" stroke="#00C9A7" stroke-width="1"/>
+  <text x="600" y="272" text-anchor="middle" fill="#00C9A7" font-size="12" font-weight="700">Validation Passed</text>
+  <text x="600" y="288" text-anchor="middle" fill="#8b8fa3" font-size="10">['valid' =&gt; true, 'error' =&gt; null]</text>
+
+  <line x1="600" y1="295" x2="600" y2="320" stroke="#00C9A7" stroke-width="2"/>
+  <polygon points="600,323 595,313 605,313" fill="#00C9A7"/>
+
+  <!-- Decode -->
+  <rect x="500" y="325" width="200" height="45" rx="10" fill="#FFD166" filter="url(#vSh)"/>
+  <text x="600" y="352" text-anchor="middle" fill="#1a1a2e" font-size="13" font-weight="700">⚙️ Toon::decode($toon)</text>
+
+  <line x1="600" y1="370" x2="600" y2="395" stroke="#FFD166" stroke-width="2"/>
+  <polygon points="600,398 595,388 605,388" fill="#FFD166"/>
+
+  <!-- Process -->
+  <rect x="500" y="400" width="200" height="45" rx="10" fill="#7B2FF7" filter="url(#vSh)"/>
+  <text x="600" y="427" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">🚀 Process Data Safely</text>
+
+  <!-- Strict mode details -->
+  <text x="200" y="380" text-anchor="middle" fill="#ffffff" font-size="13" font-weight="600">Strict Mode Checks:</text>
+
+  <rect x="75" y="395" width="250" height="28" rx="6" fill="#0d0d1a" stroke="#333" stroke-width="1"/>
+  <text x="90" y="414" fill="#00C9A7" font-size="11">✓</text>
+  <text x="110" y="414" fill="#8b8fa3" font-size="11">Row count matches [N] declaration</text>
+
+  <rect x="75" y="430" width="250" height="28" rx="6" fill="#0d0d1a" stroke="#333" stroke-width="1"/>
+  <text x="90" y="449" fill="#00C9A7" font-size="11">✓</text>
+  <text x="110" y="449" fill="#8b8fa3" font-size="11">Each row has correct field count</text>
+
+  <rect x="75" y="465" width="250" height="28" rx="6" fill="#0d0d1a" stroke="#333" stroke-width="1"/>
+  <text x="90" y="484" fill="#00C9A7" font-size="11">✓</text>
+  <text x="110" y="484" fill="#8b8fa3" font-size="11">Table structure is well-formed</text>
+
+  <!-- Brand -->
+  <circle cx="760" cy="485" r="10" fill="#EF476F" opacity="0.2"/>
+  <text x="760" y="489" text-anchor="middle" fill="#EF476F" font-size="8" font-weight="700">T</text>
+</svg>

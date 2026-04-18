@@ -1,5 +1,13 @@
 # TOON Reference
 
+<p align="center">
+  <img src="../assets/diagrams/api_reference_card.svg" alt="TOON API Quick Reference Card" width="700">
+</p>
+
+<p align="center">
+  <img src="../assets/diagrams/laravel_service_architecture.svg" alt="Laravel Service Architecture" width="700">
+</p>
+
 ## Public API
 
 Facade and service methods:

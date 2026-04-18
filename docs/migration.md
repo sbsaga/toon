@@ -24,6 +24,10 @@ Create a small baseline set:
 
 ## Upgrade Steps
 
+<p align="center">
+  <img src="assets/diagrams/migration_rollout.svg" alt="Migration Rollout Strategy — 4-phase safe upgrade path" width="700">
+</p>
+
 1. Upgrade package version.
 2. Keep `compatibility_mode=legacy`.
 3. Run tests and compare output for your baseline payloads.

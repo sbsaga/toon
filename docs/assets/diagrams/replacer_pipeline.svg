@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" font-family="'Segoe UI', system-ui, -apple-system, sans-serif">
+  <defs>
+    <linearGradient id="rInput" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4361EE"/>
+      <stop offset="100%" stop-color="#3A56D4"/>
+    </linearGradient>
+    <linearGradient id="rFilter" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#EF476F"/>
+      <stop offset="100%" stop-color="#D63A5C"/>
+    </linearGradient>
+    <linearGradient id="rEncode" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FF6B35"/>
+      <stop offset="100%" stop-color="#E65A2B"/>
+    </linearGradient>
+    <linearGradient id="rOutput" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#00C9A7"/>
+      <stop offset="100%" stop-color="#00A88D"/>
+    </linearGradient>
+    <filter id="rShadow">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="400" rx="12" fill="#1a1a2e"/>
+
+  <!-- Title -->
+  <text x="400" y="38" text-anchor="middle" fill="#ffffff" font-size="20" font-weight="700">Replacer &amp; Redaction Pipeline</text>
+  <text x="400" y="58" text-anchor="middle" fill="#8b8fa3" font-size="12">Secure sensitive fields before encoding to TOON</text>
+
+  <!-- Stage 1: Raw Payload -->
+  <rect x="30" y="90" width="155" height="100" rx="10" fill="url(#rInput)" filter="url(#rShadow)"/>
+  <text x="107" y="120" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">📦 Raw Payload</text>
+  <text x="107" y="142" text-anchor="middle" fill="#ffffffcc" font-size="10">name: Alice</text>
+  <text x="107" y="156" text-anchor="middle" fill="#ff6b6b" font-size="10">email: a@b.com</text>
+  <text x="107" y="170" text-anchor="middle" fill="#ff6b6b" font-size="10">password: s3cr3t</text>
+  <text x="107" y="184" text-anchor="middle" fill="#ffffffcc" font-size="10">role: admin</text>
+
+  <!-- Arrow 1 -->
+  <line x1="185" y1="140" x2="225" y2="140" stroke="#555" stroke-width="2"/>
+  <polygon points="228,140 218,135 218,145" fill="#555"/>
+
+  <!-- Stage 2: Replacer -->
+  <rect x="230" y="85" width="165" height="110" rx="10" fill="url(#rFilter)" filter="url(#rShadow)"/>
+  <text x="312" y="112" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">🔒 encodeWith()</text>
+  <text x="312" y="132" text-anchor="middle" fill="#ffffffcc" font-size="10">Replacer callback:</text>
+  <text x="312" y="150" text-anchor="middle" fill="#FFD166" font-size="10">password → skip()</text>
+  <text x="312" y="166" text-anchor="middle" fill="#FFD166" font-size="10">email → [redacted]</text>
+  <text x="312" y="182" text-anchor="middle" fill="#ffffffaa" font-size="10">others → passthrough</text>
+
+  <!-- Arrow 2 -->
+  <line x1="395" y1="140" x2="435" y2="140" stroke="#555" stroke-width="2"/>
+  <polygon points="438,140 428,135 428,145" fill="#555"/>
+
+  <!-- Stage 3: Encoder -->
+  <rect x="440" y="90" width="145" height="100" rx="10" fill="url(#rEncode)" filter="url(#rShadow)"/>
+  <text x="512" y="118" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">⚙️ TOON Encode</text>
+  <text x="512" y="140" text-anchor="middle" fill="#ffffffcc" font-size="10">Filtered payload</text>
+  <text x="512" y="155" text-anchor="middle" fill="#ffffffcc" font-size="10">becomes compact</text>
+  <text x="512" y="170" text-anchor="middle" fill="#ffffffcc" font-size="10">TOON format</text>
+
+  <!-- Arrow 3 -->
+  <line x1="585" y1="140" x2="625" y2="140" stroke="#555" stroke-width="2"/>
+  <polygon points="628,140 618,135 618,145" fill="#555"/>
+
+  <!-- Stage 4: Safe Output -->
+  <rect x="630" y="90" width="145" height="100" rx="10" fill="url(#rOutput)" filter="url(#rShadow)" stroke="#00FFD0" stroke-width="1"/>
+  <text x="702" y="118" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">✅ Safe TOON</text>
+  <text x="702" y="140" text-anchor="middle" fill="#ffffffcc" font-size="10">name: Alice</text>
+  <text x="702" y="155" text-anchor="middle" fill="#00FFD0" font-size="10">email: [redacted]</text>
+  <text x="702" y="170" text-anchor="middle" fill="#ffffffcc" font-size="10">role: admin</text>
+  <text x="702" y="184" text-anchor="middle" fill="#00FFD0" font-size="10">⊘ password removed</text>
+
+  <!-- Use cases row -->
+  <text x="400" y="240" text-anchor="middle" fill="#8b8fa3" font-size="12" font-weight="600">Safe for use in:</text>
+
+  <!-- Use case boxes -->
+  <rect x="80" y="260" width="140" height="40" rx="8" fill="#4361EE" opacity="0.2" stroke="#4361EE" stroke-width="1"/>
+  <text x="150" y="285" text-anchor="middle" fill="#4361EE" font-size="12" font-weight="600">🤖 LLM Prompts</text>
+
+  <rect x="250" y="260" width="130" height="40" rx="8" fill="#EF476F" opacity="0.2" stroke="#EF476F" stroke-width="1"/>
+  <text x="315" y="285" text-anchor="middle" fill="#EF476F" font-size="12" font-weight="600">📋 Log Files</text>
+
+  <rect x="410" y="260" width="130" height="40" rx="8" fill="#FFD166" opacity="0.2" stroke="#FFD166" stroke-width="1"/>
+  <text x="475" y="285" text-anchor="middle" fill="#FFD166" font-size="12" font-weight="600">🔍 Debugging</text>
+
+  <rect x="570" y="260" width="150" height="40" rx="8" fill="#00C9A7" opacity="0.2" stroke="#00C9A7" stroke-width="1"/>
+  <text x="645" y="285" text-anchor="middle" fill="#00C9A7" font-size="12" font-weight="600">📤 Internal APIs</text>
+
+  <!-- Code example -->
+  <rect x="100" y="320" width="600" height="55" rx="8" fill="#0d0d1a" stroke="#333" stroke-width="1"/>
+  <text x="120" y="342" fill="#8b8fa3" font-size="11" font-family="'Consolas', monospace">$safe = Toon::encodeWith($data, function($path, $key, $val) {</text>
+  <text x="140" y="358" fill="#FFD166" font-size="11" font-family="'Consolas', monospace">return $key === 'password' ? Toon::skip() : $val;</text>
+  <text x="120" y="370" fill="#8b8fa3" font-size="11" font-family="'Consolas', monospace">});</text>
+
+  <!-- Branding -->
+  <circle cx="760" cy="385" r="10" fill="#EF476F" opacity="0.2"/>
+  <text x="760" y="389" text-anchor="middle" fill="#EF476F" font-size="8" font-weight="700">T</text>
+</svg>

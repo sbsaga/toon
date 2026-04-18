@@ -8,6 +8,10 @@ TOON is a strong fit for LLM workflows because it keeps structured data readable
 
 ## Practical Prompt Pattern
 
+<p align="center">
+  <img src="assets/diagrams/llm_prompt_flow.svg" alt="LLM Prompt Engineering with TOON" width="700">
+</p>
+
 Use TOON as the structured context block instead of pasting raw JSON.
 
 ```php

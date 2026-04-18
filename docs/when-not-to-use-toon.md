@@ -1,6 +1,16 @@
 # When Not to Use TOON
 
+<p align="center">
+  <img src="assets/diagrams/decision_flowchart.svg" alt="When to use TOON vs JSON vs CSV — Decision flowchart" width="700">
+</p>
+
 TOON is useful, but it should not replace JSON everywhere.
+
+## Format Comparison
+
+<p align="center">
+  <img src="assets/diagrams/format_comparison.svg" alt="Token efficiency comparison across data formats" width="700">
+</p>
 
 ## Prefer JSON When
 

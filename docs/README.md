@@ -55,3 +55,14 @@ If you are shipping to production:
 - [AI prompt compression](../examples/laravel-ai-prompt-compression/README.md)
 - [Log payload storage](../examples/laravel-log-payload-storage/README.md)
 
+## Visual Reference
+
+<p align="center">
+  <img src="assets/diagrams/api_reference_card.svg" alt="TOON API Quick Reference Card" width="700">
+</p>
+
+<p align="center">
+  <img src="assets/diagrams/format_comparison.svg" alt="Token efficiency comparison across data formats" width="700">
+</p>
+
+

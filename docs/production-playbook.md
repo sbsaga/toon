@@ -115,6 +115,10 @@ logger()->info('toon.diff', $report);
 
 ## CLI in CI/CD
 
+<p align="center">
+  <img src="assets/diagrams/cicd_pipeline.svg" alt="CI/CD Integration Pipeline with TOON" width="700">
+</p>
+
 Examples for automation:
 
 ```bash
