@@ -1,5 +1,9 @@
 # Migration Guide
 
+<p align="center">
+  <img src="assets/images/compatibility_modes.png" alt="Legacy vs Modern Mode — Choose your path" width="600">
+</p>
+
 Use this guide to upgrade with low risk and clear rollback options.
 
 ## Migration Promise

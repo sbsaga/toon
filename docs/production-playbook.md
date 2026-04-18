@@ -1,5 +1,9 @@
 # Production Playbook
 
+<p align="center">
+  <img src="assets/images/production_checklist.png" alt="Production Readiness Checklist — Tests, Redaction, CI, Mode Selection, Rollback" width="600">
+</p>
+
 This guide is for teams shipping TOON in real applications with low risk.
 
 ## Goals
@@ -30,6 +34,10 @@ Recommended environment strategy:
 - `local/dev`: free to experiment with mode/delimiter
 
 ## Rollout Strategy
+
+<p align="center">
+  <img src="assets/images/compatibility_modes.png" alt="Legacy vs Modern Mode — Choose your compatibility path" width="600">
+</p>
 
 1. Upgrade package and keep `legacy`.
 2. Add snapshot tests for high-impact payloads.

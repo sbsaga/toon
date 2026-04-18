@@ -1,5 +1,9 @@
 # CLI Conversion Guide
 
+<p align="center">
+  <img src="assets/images/cli_workflow.png" alt="CLI Conversion Workflow" width="600">
+</p>
+
 `toon:convert` supports both legacy usage and newer explicit direction/options.
 
 ## Command

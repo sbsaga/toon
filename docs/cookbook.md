@@ -1,5 +1,9 @@
 # Cookbook: Real-World Examples
 
+<p align="center">
+  <img src="assets/images/use_cases_infographic.png" alt="Where TOON Helps Most — Prompts, Logs, Fixtures, Exports, Validation, Diagnostics" width="600">
+</p>
+
 This page contains practical examples you can copy into Laravel projects.
 
 ## 1) API Endpoint: Return TOON as Plain Text

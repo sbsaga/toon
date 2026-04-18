@@ -1,5 +1,9 @@
 # Quickstart
 
+<p align="center">
+  <img src="assets/images/quickstart_steps.png" alt="Get Started in 60 Seconds — Install, Encode, Use" width="600">
+</p>
+
 This page helps you get from zero to production-ready usage quickly.
 
 ## Who This Is For
@@ -73,6 +77,10 @@ How to read it:
 - each row contains the values for that column order
 
 ## Core API You Need First
+
+<p align="center">
+  <img src="assets/images/encode_decode_flow.png" alt="Encode/Decode Pipeline — PHP Array → TOON String → PHP Array" width="600">
+</p>
 
 ```php
 use Sbsaga\Toon\Facades\Toon;

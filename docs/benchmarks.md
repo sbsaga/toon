@@ -1,5 +1,9 @@
 # Benchmarks
 
+<p align="center">
+  <img src="assets/images/token_savings_chart.png" alt="TOON Benchmark Results" width="600">
+</p>
+
 ## Benchmark Fixture
 
 This repository includes a reproducible benchmark fixture:

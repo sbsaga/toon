@@ -1,8 +1,16 @@
 # TOON Documentation
 
+<p align="center">
+  <img src="assets/images/hero_banner.png" alt="TOON for Laravel — Documentation" width="100%">
+</p>
+
 This docs set is organized around quick adoption, trustworthy benchmarks, and upgrade safety.
 
 ## Choose Your Path
+
+<p align="center">
+  <img src="assets/images/quickstart_steps.png" alt="Get started in 60 seconds — Install, Encode, Use" width="600">
+</p>
 
 If you are new to TOON:
 
@@ -46,3 +54,4 @@ If you are shipping to production:
 - [Examples Index](../examples/README.md)
 - [AI prompt compression](../examples/laravel-ai-prompt-compression/README.md)
 - [Log payload storage](../examples/laravel-log-payload-storage/README.md)
+

@@ -1,5 +1,9 @@
 # Use Cases
 
+<p align="center">
+  <img src="assets/images/use_cases_infographic.png" alt="Where TOON Helps Most — Prompts, Logs, Fixtures, Exports, Validation, Diagnostics" width="600">
+</p>
+
 This page explains where TOON helps most in production Laravel systems.
 
 ## 1) Prompt Context Compression

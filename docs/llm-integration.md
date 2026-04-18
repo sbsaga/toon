@@ -1,5 +1,9 @@
 # Using TOON with LLMs
 
+<p align="center">
+  <img src="assets/images/llm_workflow_diagram.png" alt="LLM Integration Workflow" width="600">
+</p>
+
 TOON is a strong fit for LLM workflows because it keeps structured data readable while reducing repeated JSON punctuation and field names.
 
 ## Practical Prompt Pattern

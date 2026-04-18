@@ -15,6 +15,12 @@
   <img src="https://img.shields.io/badge/PHP-8.1%2B-blue" alt="PHP 8.1+">
 </p>
 
+<p align="center">
+  <img src="docs/assets/images/hero_banner.png" alt="TOON for Laravel — Compact, token-efficient data for AI workflows" width="100%">
+</p>
+
+---
+
 ## What This Package Is
 
 TOON is a Laravel package for converting JSON or PHP arrays into a compact text format that stays readable to humans and efficient for AI-oriented workflows.
@@ -29,6 +35,10 @@ It is useful when JSON is too noisy for:
 ## Why TOON Helps
 
 JSON repeats a lot of structure. TOON removes much of that repetition while keeping the data understandable.
+
+<p align="center">
+  <img src="docs/assets/images/json_vs_toon_comparison.png" alt="JSON vs TOON — 43.1% character savings" width="700">
+</p>
 
 Example input:
 
@@ -52,6 +62,12 @@ users:
     2,Bob,false
 ```
 
+## Core Features
+
+<p align="center">
+  <img src="docs/assets/images/feature_overview.png" alt="TOON Core Features — Token Efficient, Round-Trip Safe, Replacer API, Streaming, CLI Tools, LLM-Ready" width="700">
+</p>
+
 ## Install in 60 Seconds
 
 ```bash
@@ -63,6 +79,12 @@ Optional config publishing:
 ```bash
 php artisan vendor:publish --provider="Sbsaga\Toon\ToonServiceProvider" --tag=config
 ```
+
+## How It Works
+
+<p align="center">
+  <img src="docs/assets/images/encode_decode_flow.png" alt="TOON Encode/Decode Pipeline — PHP Array → Toon::encode() → TOON String → Toon::decode() → PHP Array" width="700">
+</p>
 
 ## Laravel Usage
 
@@ -125,9 +147,19 @@ php artisan toon:convert storage/example.toon --decode --strict --pretty
 php artisan toon:convert storage/example.json --mode=modern --delimiter=pipe --output=storage/example.toon
 ```
 
+## Laravel Integration Architecture
+
+<p align="center">
+  <img src="docs/assets/images/laravel_integration_architecture.png" alt="TOON Laravel Integration — ServiceProvider, Facade, Encoder, Decoder, Config" width="700">
+</p>
+
 ## Backward Compatibility First
 
 This release keeps `legacy` compatibility mode as the default so existing projects are less likely to break after upgrade.
+
+<p align="center">
+  <img src="docs/assets/images/compatibility_modes.png" alt="Legacy vs Modern Mode — Choose your compatibility path" width="700">
+</p>
 
 Default stable API:
 
@@ -169,6 +201,10 @@ If you want safer nested round trips and cleaner decode behavior for new work, o
 ```
 
 ## Reproducible Benchmark
+
+<p align="center">
+  <img src="docs/assets/images/token_savings_chart.png" alt="TOON Benchmark — 43.1% character and token savings vs JSON" width="700">
+</p>
 
 The repository includes a synthetic benchmark fixture and runner:
 
