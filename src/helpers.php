@@ -38,6 +38,18 @@ if (!function_exists('toon_encode')) {
     }
 }
 
+if (!function_exists('toon_encode_with')) {
+    /**
+     * Encode data as TOON after applying a replacer callback.
+     *
+     * @param callable $replacer fn(array $path, string|int|null $key, mixed $value): mixed
+     */
+    function toon_encode_with(mixed $data, callable $replacer): string
+    {
+        return toon_resolver()->encodeWith($data, $replacer);
+    }
+}
+
 if (!function_exists('toon_decode')) {
     /**
      * Decode a TOON payload into PHP arrays.
@@ -45,6 +57,18 @@ if (!function_exists('toon_decode')) {
     function toon_decode(string $toon): array
     {
         return toon_resolver()->decode($toon);
+    }
+}
+
+if (!function_exists('toon_encode_lines')) {
+    /**
+     * Encode data as TOON and return the result as an array of lines.
+     *
+     * @return array<int,string>
+     */
+    function toon_encode_lines(mixed $data): array
+    {
+        return iterator_to_array(toon_resolver()->encodeLines($data), false);
     }
 }
 

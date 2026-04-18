@@ -16,8 +16,13 @@ use Illuminate\Support\Facades\Facade;
  * ```
  *
  * @method static string convert(mixed $data) Encode data as TOON.
+ * @method static string convertWith(mixed $data, ?callable $replacer = null) Encode data after applying an optional replacer callback.
  * @method static string encode(mixed $data) Alias of convert().
+ * @method static string encodeWith(mixed $data, ?callable $replacer = null) Alias of convertWith().
  * @method static array decode(string $toonString) Decode TOON into PHP arrays.
+ * @method static \Generator<int,string> encodeLines(mixed $data) Encode TOON and yield output line-by-line.
+ * @method static array decodeFromLines(iterable $lines) Decode TOON from an iterable sequence of lines.
+ * @method static object skip() Sentinel value for replacer callbacks to drop fields/items.
  * @method static array{words:int,chars:int,tokens_estimate:int} estimateTokens(string $data) Estimate token usage.
  * @method static array{json_chars:int,toon_chars:int,saved_chars:int,savings_percent:float,json_tokens_estimate:int,toon_tokens_estimate:int,saved_tokens_estimate:int} diff(mixed $data) Compare JSON and TOON size/token savings.
  * @method static string promptBlock(mixed $data, string $fenceLabel = 'toon') Wrap TOON in a fenced markdown block.

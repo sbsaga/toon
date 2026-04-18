@@ -5,6 +5,7 @@ namespace Sbsaga\Toon;
 
 use Sbsaga\Toon\Converters\ToonConverter;
 use Sbsaga\Toon\Converters\ToonDecoder;
+use Sbsaga\Toon\Internal\ToonSkipValue;
 
 /**
  * Public service for TOON encoding, decoding, and token estimation.
@@ -60,6 +61,27 @@ class Toon
     }
 
     /**
+     * Encode data into TOON after applying an optional replacer transform.
+     *
+     * @param mixed $input Data to encode.
+     * @param callable|null $replacer Optional callback with signature:
+     *     fn(array $path, string|int|null $key, mixed $value): mixed
+     */
+    public function convertWith(mixed $input, ?callable $replacer = null): string
+    {
+        if ($replacer === null) {
+            return $this->convert($input);
+        }
+
+        $transformed = $this->applyReplacer($input, $replacer);
+        if ($transformed === ToonSkipValue::instance()) {
+            return '';
+        }
+
+        return $this->convert($transformed);
+    }
+
+    /**
      * Alias of {@see convert()} for callers that prefer encode/decode terminology.
      *
      * @param mixed $input Data to encode.
@@ -71,6 +93,18 @@ class Toon
     }
 
     /**
+     * Alias of {@see convertWith()} for callers that prefer encode/decode terminology.
+     *
+     * @param mixed $input Data to encode.
+     * @param callable|null $replacer Optional callback with signature:
+     *     fn(array $path, string|int|null $key, mixed $value): mixed
+     */
+    public function encodeWith(mixed $input, ?callable $replacer = null): string
+    {
+        return $this->convertWith($input, $replacer);
+    }
+
+    /**
      * Decode a TOON payload into PHP arrays.
      *
      * @param string $toon Serialized TOON payload.
@@ -79,6 +113,48 @@ class Toon
     public function decode(string $toon): array
     {
         return $this->decoder->fromToon($toon);
+    }
+
+    /**
+     * Yield encoded TOON line-by-line to support lightweight streaming workflows.
+     *
+     * @param mixed $input Data to encode.
+     * @return \Generator<int,string>
+     */
+    public function encodeLines(mixed $input): \Generator
+    {
+        $encoded = $this->encode($input);
+        if ($encoded === '') {
+            return;
+        }
+
+        foreach (explode("\n", $encoded) as $line) {
+            yield $line;
+        }
+    }
+
+    /**
+     * Decode TOON content from an iterable list of lines.
+     *
+     * @param iterable<mixed> $lines TOON lines.
+     * @return array Decoded PHP representation.
+     */
+    public function decodeFromLines(iterable $lines): array
+    {
+        $buffer = [];
+        foreach ($lines as $line) {
+            $buffer[] = rtrim((string) $line, "\r\n");
+        }
+
+        return $this->decode(implode("\n", $buffer));
+    }
+
+    /**
+     * Sentinel value for replacer callbacks to indicate that a value should be skipped.
+     */
+    public static function skip(): object
+    {
+        return ToonSkipValue::instance();
     }
 
     /**
@@ -240,5 +316,80 @@ class Toon
     protected function estimateComparableTokens(string $payload): int
     {
         return max(1, (int) ceil(strlen($payload) / 4));
+    }
+
+    /**
+     * Apply a replacer callback recursively to all values in the input tree.
+     *
+     * @param callable $replacer fn(array $path, string|int|null $key, mixed $value): mixed
+     * @return mixed
+     */
+    protected function applyReplacer(mixed $input, callable $replacer): mixed
+    {
+        return $this->walkWithReplacer($input, [], null, $replacer);
+    }
+
+    /**
+     * Walk nested values and apply a replacer callback.
+     *
+     * @param mixed $value Current value.
+     * @param array<int,string|int> $path Path to current value.
+     * @param string|int|null $key Current key.
+     * @param callable $replacer fn(array $path, string|int|null $key, mixed $value): mixed
+     * @return mixed
+     */
+    protected function walkWithReplacer(mixed $value, array $path, string|int|null $key, callable $replacer): mixed
+    {
+        $replaced = $replacer($path, $key, $value);
+        if ($replaced === ToonSkipValue::instance()) {
+            return ToonSkipValue::instance();
+        }
+
+        $iterable = $this->normalizeIterable($replaced);
+        if ($iterable === null) {
+            return $replaced;
+        }
+
+        $output = [];
+        foreach ($iterable as $childKey => $childValue) {
+            $nextPath = [...$path, is_int($childKey) ? $childKey : (string) $childKey];
+            $nextValue = $this->walkWithReplacer($childValue, $nextPath, $childKey, $replacer);
+            if ($nextValue === ToonSkipValue::instance()) {
+                continue;
+            }
+
+            $output[$childKey] = $nextValue;
+        }
+
+        return $output;
+    }
+
+    /**
+     * Convert supported iterables to arrays for replacer traversal.
+     *
+     * @return array<mixed>|null
+     */
+    protected function normalizeIterable(mixed $value): ?array
+    {
+        if (is_array($value)) {
+            return $value;
+        }
+
+        if ($value instanceof \Traversable) {
+            return iterator_to_array($value);
+        }
+
+        if (!is_object($value)) {
+            return null;
+        }
+
+        $encoded = json_encode($value, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        if ($encoded === false) {
+            return null;
+        }
+
+        $decoded = json_decode($encoded, true);
+
+        return is_array($decoded) ? $decoded : null;
     }
 }

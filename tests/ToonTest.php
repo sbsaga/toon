@@ -122,4 +122,91 @@ final class ToonTest extends TestCase
         $this->assertStringContainsString('name: Synthetic DTO', $toon);
         $this->assertStringStartsWith("```toon\n", $prompt);
     }
+
+    public function testEncodeWithReplacerCanTransformAndSkipValues(): void
+    {
+        $toon = new Toon(
+            new ToonConverter(['compatibility_mode' => 'modern']),
+            new ToonDecoder(['compatibility_mode' => 'modern'])
+        );
+
+        $payload = [
+            'team' => 'platform',
+            'debug' => true,
+            'users' => [
+                ['id' => 1, 'email' => 'alice@example.com', 'active' => true],
+                ['id' => 2, 'email' => 'bob@example.com', 'active' => false],
+            ],
+        ];
+
+        $encoded = $toon->encodeWith(
+            $payload,
+            static function (array $path, string|int|null $key, mixed $value) {
+                if ($key === 'debug') {
+                    return Toon::skip();
+                }
+
+                if ($key === 'email') {
+                    return '[redacted]';
+                }
+
+                if ($key === 'active') {
+                    return $value ? 'yes' : 'no';
+                }
+
+                return $value;
+            }
+        );
+        $decoded = $toon->decode($encoded);
+
+        $this->assertArrayNotHasKey('debug', $decoded);
+        $this->assertSame('[redacted]', $decoded['users'][0]['email']);
+        $this->assertSame('yes', $decoded['users'][0]['active']);
+        $this->assertSame('no', $decoded['users'][1]['active']);
+    }
+
+    public function testEncodeLinesAndDecodeFromLinesMatchRegularEncodeDecode(): void
+    {
+        $toon = new Toon(
+            new ToonConverter([
+                'min_rows_to_tabular' => 1,
+                'compatibility_mode' => 'modern',
+            ]),
+            new ToonDecoder(['compatibility_mode' => 'modern'])
+        );
+
+        $payload = [
+            ['id' => 1, 'name' => 'Alice'],
+            ['id' => 2, 'name' => 'Bob'],
+        ];
+
+        $encoded = $toon->encode($payload);
+        $lines = iterator_to_array($toon->encodeLines($payload), false);
+        $decodedFromLines = $toon->decodeFromLines($lines);
+
+        $this->assertSame($encoded, implode("\n", $lines));
+        $this->assertSame($toon->decode($encoded), $decodedFromLines);
+    }
+
+    public function testNewHelpersForReplacerAndLineEncodingAreAvailable(): void
+    {
+        $payload = [
+            'keep' => 'ok',
+            'remove' => 'nope',
+        ];
+
+        $encoded = toon_encode_with(
+            $payload,
+            static function (array $path, string|int|null $key, mixed $value) {
+                return $key === 'remove' ? Toon::skip() : $value;
+            }
+        );
+        $lines = toon_encode_lines($payload);
+        $decoded = toon_decode($encoded);
+
+        $this->assertArrayNotHasKey('remove', $decoded);
+        $this->assertSame('ok', $decoded['keep']);
+        $this->assertIsArray($lines);
+        $this->assertNotSame([], $lines);
+    }
 }
