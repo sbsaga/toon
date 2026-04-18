@@ -1,39 +1,91 @@
 # Migration Guide
 
-## Upgrading to the Current Release
+Use this guide to upgrade with low risk and clear rollback options.
 
-The package API remains the same, and the package now defaults to `legacy` compatibility mode so upgrades stay safer for existing applications.
+## Migration Promise
 
-## What Changed
+The package keeps backward-safe runtime defaults:
 
-- Modern mode unwraps table blocks into cleaner row lists.
-- Modern mode no longer silently truncates tables when `max_preview_items` is lower than the dataset size.
-- Modern mode avoids tabular output when a row contains nested arrays or objects.
-- Key normalization is less destructive in modern mode.
-- Global helpers and a collection macro are now available:
-  - `toon_encode()`
-  - `toon_decode()`
-  - `toon_diff()`
-  - `collect(...)->toToon()`
+- default `compatibility_mode` remains `legacy`
+- existing core API remains available
+- new features are additive and opt-in
 
-## Default Upgrade Behavior
+## Before You Upgrade
 
-You do not need to opt into legacy mode after upgrading because it is already the default:
+Create a small baseline set:
+
+1. one representative payload per critical flow
+2. one integration test that verifies encode/decode behavior
+3. one log/prompt path where sensitive field redaction is required
+
+## Upgrade Steps
+
+1. Upgrade package version.
+2. Keep `compatibility_mode=legacy`.
+3. Run tests and compare output for your baseline payloads.
+4. Add replacer rules for sensitive fields where needed.
+5. Optionally test `modern` mode in staging only.
+
+## Configuration During Rollout
 
 ```php
 // config/toon.php
-'compatibility_mode' => 'legacy',
+return [
+    'compatibility_mode' => 'legacy',
+    'strict_mode' => false,
+    'delimiter' => 'comma',
+];
 ```
 
-Legacy mode preserves:
+If your workflow requires strict validation:
 
-- lowercased keys
-- preview-limited tabular rendering
-- legacy inline flattening behavior
+```php
+// only where malformed input must fail hard
+'strict_mode' => true,
+```
 
-## Recommended Upgrade Path
+## Legacy vs Modern Decision
 
-1. Upgrade the package.
-2. Run your existing application snapshots or integration tests.
-3. Stay on `legacy` mode if you need previous output behavior.
-4. Migrate to `modern` mode once downstream consumers are updated and you want the newer round-trip behavior.
+Use `legacy` when:
+
+- existing downstream consumers expect current output shape
+- snapshot stability is more important than modernization
+
+Use `modern` when:
+
+- you are building new flows
+- you want safer nested round trips
+- you can validate downstream consumers in controlled rollout
+
+## Safe Trial Plan for Modern Mode
+
+1. keep production on `legacy`
+2. run staging tests with `modern`
+3. compare representative payload outputs
+4. validate consumer parsers and templates
+5. switch production after sign-off
+
+## Rollback Plan
+
+If behavior mismatch is detected after upgrade:
+
+1. set `compatibility_mode` back to `legacy`
+2. disable newly introduced replacer transforms
+3. disable strict decode outside critical validation paths
+4. rerun baseline payload tests
+
+In most cases rollback is configuration-first, not code removal.
+
+## Useful Validation Commands
+
+```bash
+composer validate --strict
+vendor/bin/phpunit --configuration phpunit.xml.dist
+composer audit
+```
+
+## Related Guides
+
+- [Upgrade safety for v1.3.0](upgrade-safety-v1-3.md)
+- [Production playbook](production-playbook.md)
+- [Cookbook](cookbook.md)

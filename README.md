@@ -77,10 +77,29 @@ $stats = Toon::estimateTokens($toon);
 $diff = Toon::diff($payload);
 ```
 
+Replacer usage:
+
+```php
+use Sbsaga\Toon\Facades\Toon;
+
+$toon = Toon::encodeWith($payload, function (array $path, string|int|null $key, mixed $value) {
+    if ($key === 'debug') {
+        return Toon::skip();
+    }
+
+    if ($key === 'email') {
+        return '[redacted]';
+    }
+
+    return $value;
+});
+```
+
 Global helpers:
 
 ```php
 $toon = toon_encode($payload);
+$toonFiltered = toon_encode_with($payload, fn (array $path, string|int|null $key, mixed $value) => $value);
 $decoded = toon_decode($toon);
 $diff = toon_diff($payload);
 ```
@@ -89,6 +108,21 @@ Collection macro:
 
 ```php
 $toonRows = collect($payload['users'])->toToon();
+```
+
+Streaming convenience:
+
+```php
+$lines = Toon::encodeLines($payload); // Generator<string>
+$decoded = Toon::decodeFromLines($lines);
+```
+
+CLI conversion (advanced options):
+
+```bash
+php artisan toon:convert storage/example.json --from=json --to=toon --stats
+php artisan toon:convert storage/example.toon --decode --strict --pretty
+php artisan toon:convert storage/example.json --mode=modern --delimiter=pipe --output=storage/example.toon
 ```
 
 ## Backward Compatibility First
@@ -105,11 +139,18 @@ Default stable API:
 New optional improvements:
 
 - `Toon::diff()`
+- `Toon::convertWith()`
+- `Toon::encodeWith()`
+- `Toon::skip()`
+- `Toon::encodeLines()`
+- `Toon::decodeFromLines()`
 - `Toon::promptBlock()`
 - `Toon::validate()`
 - `Toon::contentType()`
 - `Toon::fileExtension()`
 - `toon_encode()`
+- `toon_encode_with()`
+- `toon_encode_lines()`
 - `toon_decode()`
 - `toon_diff()`
 - `toon_prompt()`
@@ -165,8 +206,17 @@ Notes:
 
 ## Documentation
 
+New here: start with [Quickstart](docs/quickstart.md), then [Cookbook: real-world examples](docs/cookbook.md).
+
+Shipping to production: read [Production playbook](docs/production-playbook.md), then [Migration guide](docs/migration.md), and keep [Troubleshooting](docs/troubleshooting.md) handy.
+
 - [Docs index](docs/README.md)
 - [Quickstart](docs/quickstart.md)
+- [Cookbook: real-world examples](docs/cookbook.md)
+- [Production playbook](docs/production-playbook.md)
+- [Upgrade safety for v1.3.0](docs/upgrade-safety-v1-3.md)
+- [CLI conversion guide](docs/cli-conversion-guide.md)
+- [Replacer recipes](docs/replacer-recipes.md)
 - [Format and compatibility](docs/spec-compatibility.md)
 - [Syntax cheatsheet](docs/syntax-cheatsheet.md)
 - [LLM integration guide](docs/llm-integration.md)
@@ -176,6 +226,7 @@ Notes:
 - [Benchmarks](docs/benchmarks.md)
 - [Use cases](docs/use-cases.md)
 - [FAQ](docs/faq.md)
+- [Troubleshooting](docs/troubleshooting.md)
 - [Reference](docs/reference/README.md)
 - [Article index](docs/articles/README.md)
 
