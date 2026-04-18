@@ -20,6 +20,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 
 - tightened package metadata and README positioning
+- expanded `illuminate/support` compatibility to include Laravel 13 (`^13.0`)
 - added `diff()` metrics for JSON-vs-TOON comparisons
 - added delimiter, strict mode, and compatibility mode support
 - improved nested round-trip safety in modern mode
