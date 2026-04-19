@@ -2,24 +2,100 @@
 
 ## Is TOON a replacement for JSON?
 
-No. JSON remains the best default for APIs and transport. TOON is most useful when readability and payload size matter inside prompts, logs, fixtures, or internal snapshots.
+No. JSON should remain your default for external API transport and cross-system interoperability.
+
+TOON is best for internal human-readable structured text:
+
+- prompts
+- logs
+- fixtures
+- internal exports
 
 ## Does TOON always save tokens?
 
-Not always. It helps most when your payload has repeated field names or repeated object shapes. Flat or very small payloads may not benefit much.
+Not always. Savings are strongest when payloads have repeated object shapes and repeated field names.
 
-## Can I decode TOON back into PHP arrays?
+Measure with:
 
-Yes. `Toon::decode()` and `toon_decode()` both return arrays.
+```php
+\Sbsaga\Toon\Facades\Toon::diff($payload);
+```
 
-## What is the safest mode for new projects?
+## Can I decode TOON back to arrays reliably?
 
-`modern` mode. It avoids silent table truncation and keeps nested rows expanded when a table would lose information.
+Yes. `Toon::decode()` and `toon_decode()` return arrays.
 
-## What is `strict_mode` for?
+For stricter validation:
 
-It makes decoding fail fast when a TOON table is malformed. This is useful for CI fixtures, imports, and defensive parsing.
+- use `Toon::validate($toon, true)` before decode
+- or decode with CLI `--strict` for fixture/import checks
 
-## Why does the package have both facade methods and helpers?
+## Which mode should I use?
 
-Some teams prefer explicit facade usage, while others want quick procedural helpers in templates, scripts, or jobs. Both are supported.
+- `legacy`: safest for existing production systems and upgrades
+- `modern`: recommended for new projects or controlled migrations
+
+## Do I need to change existing code to upgrade?
+
+Usually no.
+
+Core APIs remain unchanged:
+
+- `Toon::convert()`
+- `Toon::encode()`
+- `Toon::decode()`
+- `Toon::estimateTokens()`
+
+New features are additive.
+
+## How do I prevent sensitive fields from being encoded?
+
+Use a replacer:
+
+```php
+Toon::encodeWith($payload, function (array $path, string|int|null $key, mixed $value) {
+    return in_array($key, ['password', 'token'], true)
+        ? Toon::skip()
+        : $value;
+});
+```
+
+## Is TOON safe for production logs?
+
+Yes, if you apply redaction and follow normal logging policy.
+
+Recommended:
+
+- redact secrets/emails/tokens
+- cap payload size by business rules
+- keep strict mode for untrusted imported TOON
+
+## When should I use CLI instead of facade/helpers?
+
+Use CLI for:
+
+- fixture conversion in CI
+- file-to-file batch conversions
+- shell pipelines and scripts
+
+Use facade/helpers for:
+
+- request/job runtime flows
+- in-app transformations
+
+## Can I stream TOON instead of handling one large string?
+
+Yes:
+
+- `Toon::encodeLines()` for line iteration
+- `Toon::decodeFromLines()` for rebuilding arrays from lines
+
+## What if output changed after upgrade?
+
+First action:
+
+1. ensure `compatibility_mode=legacy`
+2. re-run your snapshot/contract tests
+3. review new replacer/strict settings
+
+See [Migration guide](migration.md) and [Production playbook](production-playbook.md).

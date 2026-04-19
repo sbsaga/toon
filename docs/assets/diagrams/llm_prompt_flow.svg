@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420" font-family="'Segoe UI', system-ui, -apple-system, sans-serif">
+  <defs>
+    <linearGradient id="sApp" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#4361EE"/><stop offset="100%" stop-color="#3A56D4"/></linearGradient>
+    <linearGradient id="sEnc" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#EF476F"/><stop offset="100%" stop-color="#D63A5C"/></linearGradient>
+    <linearGradient id="sToon" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00C9A7"/><stop offset="100%" stop-color="#00A88D"/></linearGradient>
+    <linearGradient id="sLLM" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#7B2FF7"/><stop offset="100%" stop-color="#6B22E0"/></linearGradient>
+    <linearGradient id="sRes" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FF6B35"/><stop offset="100%" stop-color="#E65A2B"/></linearGradient>
+    <filter id="sSh"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.3"/></filter>
+  </defs>
+
+  <rect width="800" height="420" rx="12" fill="#1a1a2e"/>
+
+  <!-- Title -->
+  <text x="400" y="38" text-anchor="middle" fill="#ffffff" font-size="20" font-weight="700">LLM Prompt Engineering with TOON</text>
+  <text x="400" y="58" text-anchor="middle" fill="#8b8fa3" font-size="12">Reduce token cost while keeping data structure for AI models</text>
+
+  <!-- Step 1: Laravel App -->
+  <rect x="30" y="85" width="130" height="110" rx="10" fill="url(#sApp)" filter="url(#sSh)"/>
+  <text x="95" y="115" text-anchor="middle" fill="#fff" font-size="28">🖥️</text>
+  <text x="95" y="140" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">Laravel App</text>
+  <text x="95" y="155" text-anchor="middle" fill="#ffffffaa" font-size="10">Business data</text>
+  <text x="95" y="168" text-anchor="middle" fill="#ffffffaa" font-size="10">Orders, Users</text>
+  <text x="95" y="181" text-anchor="middle" fill="#ffffffaa" font-size="10">Metrics, Alerts</text>
+
+  <!-- Arrow -->
+  <line x1="160" y1="140" x2="190" y2="140" stroke="#4361EE" stroke-width="2"/>
+  <polygon points="193,140 183,135 183,145" fill="#4361EE"/>
+
+  <!-- Step 2: TOON Encode -->
+  <rect x="195" y="85" width="130" height="110" rx="10" fill="url(#sEnc)" filter="url(#sSh)"/>
+  <text x="260" y="115" text-anchor="middle" fill="#fff" font-size="28">🔄</text>
+  <text x="260" y="140" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">TOON Encode</text>
+  <text x="260" y="155" text-anchor="middle" fill="#ffffffaa" font-size="10">+ Redact secrets</text>
+  <text x="260" y="168" text-anchor="middle" fill="#ffffffaa" font-size="10">+ Compress data</text>
+  <text x="260" y="181" text-anchor="middle" fill="#00FFD0" font-size="10" font-weight="600">-43% tokens ✓</text>
+
+  <!-- Arrow -->
+  <line x1="325" y1="140" x2="355" y2="140" stroke="#EF476F" stroke-width="2"/>
+  <polygon points="358,140 348,135 348,145" fill="#EF476F"/>
+
+  <!-- Step 3: Compact Prompt -->
+  <rect x="360" y="85" width="130" height="110" rx="10" fill="url(#sToon)" filter="url(#sSh)" stroke="#00FFD0" stroke-width="1"/>
+  <text x="425" y="115" text-anchor="middle" fill="#fff" font-size="28">📝</text>
+  <text x="425" y="140" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">TOON Prompt</text>
+  <text x="425" y="155" text-anchor="middle" fill="#ffffffcc" font-size="10">Compact context</text>
+  <text x="425" y="168" text-anchor="middle" fill="#ffffffcc" font-size="10">Human-readable</text>
+  <text x="425" y="181" text-anchor="middle" fill="#ffffffcc" font-size="10">Schema-aware</text>
+
+  <!-- Arrow -->
+  <line x1="490" y1="140" x2="520" y2="140" stroke="#00C9A7" stroke-width="2"/>
+  <polygon points="523,140 513,135 513,145" fill="#00C9A7"/>
+
+  <!-- Step 4: LLM API -->
+  <rect x="525" y="85" width="130" height="110" rx="10" fill="url(#sLLM)" filter="url(#sSh)"/>
+  <text x="590" y="115" text-anchor="middle" fill="#fff" font-size="28">🧠</text>
+  <text x="590" y="140" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">LLM API</text>
+  <text x="590" y="155" text-anchor="middle" fill="#ffffffaa" font-size="10">GPT · Claude</text>
+  <text x="590" y="168" text-anchor="middle" fill="#ffffffaa" font-size="10">Gemini · Mistral</text>
+  <text x="590" y="181" text-anchor="middle" fill="#ffffffaa" font-size="10">Any LLM</text>
+
+  <!-- Arrow -->
+  <line x1="655" y1="140" x2="685" y2="140" stroke="#7B2FF7" stroke-width="2"/>
+  <polygon points="688,140 678,135 678,145" fill="#7B2FF7"/>
+
+  <!-- Step 5: AI Response -->
+  <rect x="690" y="85" width="85" height="110" rx="10" fill="url(#sRes)" filter="url(#sSh)"/>
+  <text x="732" y="115" text-anchor="middle" fill="#fff" font-size="28">✨</text>
+  <text x="732" y="142" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">AI</text>
+  <text x="732" y="156" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">Response</text>
+  <text x="732" y="176" text-anchor="middle" fill="#ffffffaa" font-size="10">Accurate</text>
+  <text x="732" y="189" text-anchor="middle" fill="#ffffffaa" font-size="10">results</text>
+
+  <!-- Benefits row -->
+  <text x="400" y="230" text-anchor="middle" fill="#ffffff" font-size="14" font-weight="600">Why TOON for LLM Prompts?</text>
+
+  <!-- Benefit cards -->
+  <rect x="40" y="250" width="170" height="70" rx="8" fill="#00C9A7" opacity="0.1" stroke="#00C9A7" stroke-width="1"/>
+  <text x="125" y="275" text-anchor="middle" fill="#00C9A7" font-size="13" font-weight="700">💰 Save Money</text>
+  <text x="125" y="295" text-anchor="middle" fill="#8b8fa3" font-size="10">43% fewer tokens =</text>
+  <text x="125" y="308" text-anchor="middle" fill="#8b8fa3" font-size="10">43% lower API costs</text>
+
+  <rect x="230" y="250" width="170" height="70" rx="8" fill="#4361EE" opacity="0.1" stroke="#4361EE" stroke-width="1"/>
+  <text x="315" y="275" text-anchor="middle" fill="#4361EE" font-size="13" font-weight="700">📐 Keep Structure</text>
+  <text x="315" y="295" text-anchor="middle" fill="#8b8fa3" font-size="10">Schema headers help</text>
+  <text x="315" y="308" text-anchor="middle" fill="#8b8fa3" font-size="10">LLMs parse reliably</text>
+
+  <rect x="420" y="250" width="170" height="70" rx="8" fill="#EF476F" opacity="0.1" stroke="#EF476F" stroke-width="1"/>
+  <text x="505" y="275" text-anchor="middle" fill="#EF476F" font-size="13" font-weight="700">🔒 Redact Safely</text>
+  <text x="505" y="295" text-anchor="middle" fill="#8b8fa3" font-size="10">Remove passwords</text>
+  <text x="505" y="308" text-anchor="middle" fill="#8b8fa3" font-size="10">before sending to AI</text>
+
+  <rect x="610" y="250" width="160" height="70" rx="8" fill="#7B2FF7" opacity="0.1" stroke="#7B2FF7" stroke-width="1"/>
+  <text x="690" y="275" text-anchor="middle" fill="#7B2FF7" font-size="13" font-weight="700">👀 Debug Easily</text>
+  <text x="690" y="295" text-anchor="middle" fill="#8b8fa3" font-size="10">Humans can read</text>
+  <text x="690" y="308" text-anchor="middle" fill="#8b8fa3" font-size="10">TOON prompts directly</text>
+
+  <!-- Code snippet -->
+  <rect x="130" y="340" width="540" height="55" rx="8" fill="#0d0d1a" stroke="#333" stroke-width="1"/>
+  <text x="150" y="360" fill="#8b8fa3" font-size="11" font-family="'Consolas', monospace">$prompt = "Analyze the following context:\n\n"</text>
+  <text x="150" y="376" fill="#FFD166" font-size="11" font-family="'Consolas', monospace">       . Toon::promptBlock($context);</text>
+  <text x="150" y="390" fill="#8b8fa3" font-size="11" font-family="'Consolas', monospace">$response = $llm->chat($prompt);</text>
+
+  <!-- Brand -->
+  <image href="logo.webp" x="725" y="375" width="50" height="50" opacity="0.7"/>
+</svg>
+

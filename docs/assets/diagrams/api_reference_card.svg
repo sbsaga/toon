@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 480" font-family="'Segoe UI', system-ui, -apple-system, sans-serif">
+  <defs>
+    <filter id="aSh"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.3"/></filter>
+  </defs>
+
+  <rect width="800" height="480" rx="12" fill="#1a1a2e"/>
+
+  <!-- Title -->
+  <text x="400" y="38" text-anchor="middle" fill="#ffffff" font-size="20" font-weight="700">Complete API Quick Reference</text>
+  <text x="400" y="58" text-anchor="middle" fill="#8b8fa3" font-size="12">All public methods and helpers at a glance</text>
+
+  <!-- Facade column -->
+  <rect x="30" y="75" width="240" height="380" rx="10" fill="#EF476F" opacity="0.08" stroke="#EF476F" stroke-width="1"/>
+  <text x="150" y="100" text-anchor="middle" fill="#EF476F" font-size="14" font-weight="700">🏛️ Toon Facade</text>
+
+  <rect x="45" y="112" width="210" height="24" rx="4" fill="#0d0d1a"/>
+  <text x="55" y="129" fill="#00C9A7" font-size="11" font-family="'Consolas', monospace">Toon::encode($data)</text>
+
+  <rect x="45" y="142" width="210" height="24" rx="4" fill="#0d0d1a"/>
+  <text x="55" y="159" fill="#00C9A7" font-size="11" font-family="'Consolas', monospace">Toon::decode($toon)</text>
+
+  <rect x="45" y="172" width="210" height="24" rx="4" fill="#0d0d1a"/>
+  <text x="55" y="189" fill="#FFD166" font-size="11" font-family="'Consolas', monospace">Toon::encodeWith($d, $fn)</text>
+
+  <rect x="45" y="202" width="210" height="24" rx="4" fill="#0d0d1a"/>
+  <text x="55" y="219" fill="#FFD166" font-size="11" font-family="'Consolas', monospace">Toon::diff($data)</text>
+
+  <rect x="45" y="232" width="210" height="24" rx="4" fill="#0d0d1a"/>
+  <text x="55" y="249" fill="#FFD166" font-size="11" font-family="'Consolas', monospace">Toon::validate($toon)</text>
+
+  <rect x="45" y="262" width="210" height="24" rx="4" fill="#0d0d1a"/>
+  <text x="55" y="279" fill="#FFD166" font-size="11" font-family="'Consolas', monospace">Toon::promptBlock($data)</text>
+
+  <rect x="45" y="292" width="210" height="24" rx="4" fill="#0d0d1a"/>
+  <text x="55" y="309" fill="#FFD166" font-size="11" font-family="'Consolas', monospace">Toon::encodeLines($data)</text>
+
+  <rect x="45" y="322" width="210" height="24" rx="4" fill="#0d0d1a"/>
+  <text x="55" y="339" fill="#FFD166" font-size="11" font-family="'Consolas', monospace">Toon::decodeFromLines(..)</text>
+
+  <rect x="45" y="352" width="210" height="24" rx="4" fill="#0d0d1a"/>
+  <text x="55" y="369" fill="#FFD166" font-size="11" font-family="'Consolas', monospace">Toon::estimateTokens(..)</text>
+
+  <rect x="45" y="382" width="210" height="24" rx="4" fill="#0d0d1a"/>
+  <text x="55" y="399" fill="#8b8fa3" font-size="11" font-family="'Consolas', monospace">Toon::skip()</text>
+
+  <rect x="45" y="412" width="210" height="24" rx="4" fill="#0d0d1a"/>
+  <text x="55" y="429" fill="#8b8fa3" font-size="11" font-family="'Consolas', monospace">Toon::contentType()</text>
+
+  <!-- Helpers column -->
+  <rect x="290" y="75" width="230" height="245" rx="10" fill="#00C9A7" opacity="0.08" stroke="#00C9A7" stroke-width="1"/>
+  <text x="405" y="100" text-anchor="middle" fill="#00C9A7" font-size="14" font-weight="700">⚡ Global Helpers</text>
+
+  <rect x="305" y="112" width="200" height="24" rx="4" fill="#0d0d1a"/>
+  <text x="315" y="129" fill="#00C9A7" font-size="11" font-family="'Consolas', monospace">toon_encode($data)</text>
+
+  <rect x="305" y="142" width="200" height="24" rx="4" fill="#0d0d1a"/>
+  <text x="315" y="159" fill="#00C9A7" font-size="11" font-family="'Consolas', monospace">toon_decode($toon)</text>
+
+  <rect x="305" y="172" width="200" height="24" rx="4" fill="#0d0d1a"/>
+  <text x="315" y="189" fill="#FFD166" font-size="11" font-family="'Consolas', monospace">toon_encode_with(.., $fn)</text>
+
+  <rect x="305" y="202" width="200" height="24" rx="4" fill="#0d0d1a"/>
+  <text x="315" y="219" fill="#FFD166" font-size="11" font-family="'Consolas', monospace">toon_encode_lines($data)</text>
+
+  <rect x="305" y="232" width="200" height="24" rx="4" fill="#0d0d1a"/>
+  <text x="315" y="249" fill="#FFD166" font-size="11" font-family="'Consolas', monospace">toon_diff($data)</text>
+
+  <rect x="305" y="262" width="200" height="24" rx="4" fill="#0d0d1a"/>
+  <text x="315" y="279" fill="#FFD166" font-size="11" font-family="'Consolas', monospace">toon_prompt($data)</text>
+
+  <rect x="305" y="292" width="200" height="24" rx="4" fill="#0d0d1a"/>
+  <text x="315" y="309" fill="#FFD166" font-size="11" font-family="'Consolas', monospace">toon_validate($toon)</text>
+
+  <!-- Collection & Trait column -->
+  <rect x="540" y="75" width="230" height="180" rx="10" fill="#7B2FF7" opacity="0.08" stroke="#7B2FF7" stroke-width="1"/>
+  <text x="655" y="100" text-anchor="middle" fill="#7B2FF7" font-size="14" font-weight="700">🧩 Laravel Extras</text>
+
+  <rect x="555" y="112" width="200" height="24" rx="4" fill="#0d0d1a"/>
+  <text x="565" y="129" fill="#7B2FF7" font-size="11" font-family="'Consolas', monospace">collect(..)->toToon()</text>
+
+  <rect x="555" y="142" width="200" height="24" rx="4" fill="#0d0d1a"/>
+  <text x="565" y="159" fill="#7B2FF7" font-size="11" font-family="'Consolas', monospace">use Toonable; // Trait</text>
+
+  <rect x="555" y="172" width="200" height="24" rx="4" fill="#0d0d1a"/>
+  <text x="565" y="189" fill="#7B2FF7" font-size="11" font-family="'Consolas', monospace">$model->toToon()</text>
+
+  <rect x="555" y="202" width="200" height="24" rx="4" fill="#0d0d1a"/>
+  <text x="565" y="219" fill="#7B2FF7" font-size="11" font-family="'Consolas', monospace">$model->toToonArray()</text>
+
+  <rect x="555" y="232" width="200" height="24" rx="4" fill="#0d0d1a"/>
+  <text x="565" y="249" fill="#7B2FF7" font-size="11" font-family="'Consolas', monospace">$model->toToonDiff()</text>
+
+  <!-- CLI column -->
+  <rect x="540" y="280" width="230" height="130" rx="10" fill="#FF6B35" opacity="0.08" stroke="#FF6B35" stroke-width="1"/>
+  <text x="655" y="305" text-anchor="middle" fill="#FF6B35" font-size="14" font-weight="700">🖥️ CLI (Artisan)</text>
+
+  <rect x="555" y="315" width="200" height="24" rx="4" fill="#0d0d1a"/>
+  <text x="565" y="332" fill="#FF6B35" font-size="10" font-family="'Consolas', monospace">toon:convert file --encode</text>
+
+  <rect x="555" y="345" width="200" height="24" rx="4" fill="#0d0d1a"/>
+  <text x="565" y="362" fill="#FF6B35" font-size="10" font-family="'Consolas', monospace">toon:convert file --decode</text>
+
+  <rect x="555" y="375" width="200" height="24" rx="4" fill="#0d0d1a"/>
+  <text x="565" y="392" fill="#FF6B35" font-size="10" font-family="'Consolas', monospace">--stats --strict --pretty</text>
+
+  <!-- Legend -->
+  <rect x="290" y="340" width="12" height="12" rx="2" fill="#00C9A7"/>
+  <text x="310" y="351" fill="#8b8fa3" font-size="10">Core (stable since v1.0)</text>
+
+  <rect x="290" y="360" width="12" height="12" rx="2" fill="#FFD166"/>
+  <text x="310" y="371" fill="#8b8fa3" font-size="10">New in v1.3+ (opt‑in)</text>
+
+  <rect x="290" y="380" width="12" height="12" rx="2" fill="#8b8fa3"/>
+  <text x="310" y="391" fill="#8b8fa3" font-size="10">Utility / meta</text>
+
+  <!-- Footer -->
+  <text x="400" y="470" text-anchor="middle" fill="#6b6f83" font-size="11">📖 Full reference: docs/reference/ · sbsaga/toon</text>
+
+  <!-- Brand -->
+  <image href="logo.webp" x="725" y="430" width="50" height="50" opacity="0.7"/>
+</svg>
+

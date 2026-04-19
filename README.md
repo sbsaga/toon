@@ -15,6 +15,12 @@
   <img src="https://img.shields.io/badge/PHP-8.1%2B-blue" alt="PHP 8.1+">
 </p>
 
+<p align="center">
+  <img src="docs/assets/images/hero_banner.png" alt="TOON for Laravel — Compact, token-efficient data for AI workflows" width="100%">
+</p>
+
+---
+
 ## What This Package Is
 
 TOON is a Laravel package for converting JSON or PHP arrays into a compact text format that stays readable to humans and efficient for AI-oriented workflows.
@@ -29,6 +35,10 @@ It is useful when JSON is too noisy for:
 ## Why TOON Helps
 
 JSON repeats a lot of structure. TOON removes much of that repetition while keeping the data understandable.
+
+<p align="center">
+  <img src="docs/assets/images/json_vs_toon_comparison.png" alt="JSON vs TOON — 43.1% character savings" width="700">
+</p>
 
 Example input:
 
@@ -52,6 +62,12 @@ users:
     2,Bob,false
 ```
 
+## Core Features
+
+<p align="center">
+  <img src="docs/assets/images/feature_overview.png" alt="TOON Core Features — Token Efficient, Round-Trip Safe, Replacer API, Streaming, CLI Tools, LLM-Ready" width="700">
+</p>
+
 ## Install in 60 Seconds
 
 ```bash
@@ -63,6 +79,12 @@ Optional config publishing:
 ```bash
 php artisan vendor:publish --provider="Sbsaga\Toon\ToonServiceProvider" --tag=config
 ```
+
+## How It Works
+
+<p align="center">
+  <img src="docs/assets/images/encode_decode_flow.png" alt="TOON Encode/Decode Pipeline — PHP Array → Toon::encode() → TOON String → Toon::decode() → PHP Array" width="700">
+</p>
 
 ## Laravel Usage
 
@@ -77,10 +99,29 @@ $stats = Toon::estimateTokens($toon);
 $diff = Toon::diff($payload);
 ```
 
+Replacer usage:
+
+```php
+use Sbsaga\Toon\Facades\Toon;
+
+$toon = Toon::encodeWith($payload, function (array $path, string|int|null $key, mixed $value) {
+    if ($key === 'debug') {
+        return Toon::skip();
+    }
+
+    if ($key === 'email') {
+        return '[redacted]';
+    }
+
+    return $value;
+});
+```
+
 Global helpers:
 
 ```php
 $toon = toon_encode($payload);
+$toonFiltered = toon_encode_with($payload, fn (array $path, string|int|null $key, mixed $value) => $value);
 $decoded = toon_decode($toon);
 $diff = toon_diff($payload);
 ```
@@ -91,9 +132,34 @@ Collection macro:
 $toonRows = collect($payload['users'])->toToon();
 ```
 
+Streaming convenience:
+
+```php
+$lines = Toon::encodeLines($payload); // Generator<string>
+$decoded = Toon::decodeFromLines($lines);
+```
+
+CLI conversion (advanced options):
+
+```bash
+php artisan toon:convert storage/example.json --from=json --to=toon --stats
+php artisan toon:convert storage/example.toon --decode --strict --pretty
+php artisan toon:convert storage/example.json --mode=modern --delimiter=pipe --output=storage/example.toon
+```
+
+## Laravel Integration Architecture
+
+<p align="center">
+  <img src="docs/assets/images/laravel_integration_architecture.png" alt="TOON Laravel Integration — ServiceProvider, Facade, Encoder, Decoder, Config" width="700">
+</p>
+
 ## Backward Compatibility First
 
 This release keeps `legacy` compatibility mode as the default so existing projects are less likely to break after upgrade.
+
+<p align="center">
+  <img src="docs/assets/images/compatibility_modes.png" alt="Legacy vs Modern Mode — Choose your compatibility path" width="700">
+</p>
 
 Default stable API:
 
@@ -105,11 +171,18 @@ Default stable API:
 New optional improvements:
 
 - `Toon::diff()`
+- `Toon::convertWith()`
+- `Toon::encodeWith()`
+- `Toon::skip()`
+- `Toon::encodeLines()`
+- `Toon::decodeFromLines()`
 - `Toon::promptBlock()`
 - `Toon::validate()`
 - `Toon::contentType()`
 - `Toon::fileExtension()`
 - `toon_encode()`
+- `toon_encode_with()`
+- `toon_encode_lines()`
 - `toon_decode()`
 - `toon_diff()`
 - `toon_prompt()`
@@ -128,6 +201,10 @@ If you want safer nested round trips and cleaner decode behavior for new work, o
 ```
 
 ## Reproducible Benchmark
+
+<p align="center">
+  <img src="docs/assets/images/token_savings_chart.png" alt="TOON Benchmark — 43.1% character and token savings vs JSON" width="700">
+</p>
 
 The repository includes a synthetic benchmark fixture and runner:
 
@@ -165,8 +242,17 @@ Notes:
 
 ## Documentation
 
+New here: start with [Quickstart](docs/quickstart.md), then [Cookbook: real-world examples](docs/cookbook.md).
+
+Shipping to production: read [Production playbook](docs/production-playbook.md), then [Migration guide](docs/migration.md), and keep [Troubleshooting](docs/troubleshooting.md) handy.
+
 - [Docs index](docs/README.md)
 - [Quickstart](docs/quickstart.md)
+- [Cookbook: real-world examples](docs/cookbook.md)
+- [Production playbook](docs/production-playbook.md)
+- [Upgrade safety for v1.3.0](docs/upgrade-safety-v1-3.md)
+- [CLI conversion guide](docs/cli-conversion-guide.md)
+- [Replacer recipes](docs/replacer-recipes.md)
 - [Format and compatibility](docs/spec-compatibility.md)
 - [Syntax cheatsheet](docs/syntax-cheatsheet.md)
 - [LLM integration guide](docs/llm-integration.md)
@@ -176,6 +262,7 @@ Notes:
 - [Benchmarks](docs/benchmarks.md)
 - [Use cases](docs/use-cases.md)
 - [FAQ](docs/faq.md)
+- [Troubleshooting](docs/troubleshooting.md)
 - [Reference](docs/reference/README.md)
 - [Article index](docs/articles/README.md)
 

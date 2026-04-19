@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" font-family="'Segoe UI', system-ui, -apple-system, sans-serif">
+  <defs>
+    <filter id="cSh"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.3"/></filter>
+  </defs>
+
+  <rect width="800" height="500" rx="12" fill="#1a1a2e"/>
+
+  <!-- Title -->
+  <text x="400" y="38" text-anchor="middle" fill="#ffffff" font-size="20" font-weight="700">CI/CD Integration Pipeline</text>
+  <text x="400" y="58" text-anchor="middle" fill="#8b8fa3" font-size="12">Automate TOON fixture conversion in your deployment workflow</text>
+
+  <!-- Pipeline stages -->
+  <!-- Stage 1: Code Push -->
+  <rect x="40" y="85" width="140" height="80" rx="10" fill="#4361EE" filter="url(#cSh)"/>
+  <text x="110" y="115" text-anchor="middle" fill="#fff" font-size="24">📝</text>
+  <text x="110" y="140" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">Code Push</text>
+  <text x="110" y="155" text-anchor="middle" fill="#ffffffaa" font-size="10">git push origin</text>
+
+  <line x1="180" y1="125" x2="210" y2="125" stroke="#555" stroke-width="2"/>
+  <polygon points="213,125 203,120 203,130" fill="#555"/>
+
+  <!-- Stage 2: Install -->
+  <rect x="215" y="85" width="140" height="80" rx="10" fill="#6C63FF" filter="url(#cSh)"/>
+  <text x="285" y="115" text-anchor="middle" fill="#fff" font-size="24">📦</text>
+  <text x="285" y="140" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">Dependencies</text>
+  <text x="285" y="155" text-anchor="middle" fill="#ffffffaa" font-size="10">composer install</text>
+
+  <line x1="355" y1="125" x2="385" y2="125" stroke="#555" stroke-width="2"/>
+  <polygon points="388,125 378,120 378,130" fill="#555"/>
+
+  <!-- Stage 3: Tests -->
+  <rect x="390" y="85" width="140" height="80" rx="10" fill="#EF476F" filter="url(#cSh)"/>
+  <text x="460" y="115" text-anchor="middle" fill="#fff" font-size="24">🧪</text>
+  <text x="460" y="140" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">PHPUnit Tests</text>
+  <text x="460" y="155" text-anchor="middle" fill="#ffffffaa" font-size="10">Round-trip checks</text>
+
+  <line x1="530" y1="125" x2="560" y2="125" stroke="#555" stroke-width="2"/>
+  <polygon points="563,125 553,120 553,130" fill="#555"/>
+
+  <!-- Stage 4: TOON Convert -->
+  <rect x="565" y="85" width="200" height="80" rx="10" fill="#00C9A7" filter="url(#cSh)" stroke="#00FFD0" stroke-width="1"/>
+  <text x="665" y="115" text-anchor="middle" fill="#fff" font-size="24">⚙️</text>
+  <text x="665" y="140" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">TOON Fixture Convert</text>
+  <text x="665" y="155" text-anchor="middle" fill="#ffffffcc" font-size="10">artisan toon:convert --stats</text>
+
+  <!-- Commands section -->
+  <text x="400" y="205" text-anchor="middle" fill="#ffffff" font-size="14" font-weight="600">Recommended CI Commands</text>
+
+  <!-- Command 1 -->
+  <rect x="60" y="225" width="680" height="35" rx="6" fill="#0d0d1a" stroke="#333" stroke-width="1"/>
+  <text x="80" y="247" fill="#00C9A7" font-size="12" font-family="'Consolas', monospace">$ composer validate --strict</text>
+  <text x="700" y="247" text-anchor="end" fill="#8b8fa3" font-size="10">Validate composer.json</text>
+
+  <!-- Command 2 -->
+  <rect x="60" y="270" width="680" height="35" rx="6" fill="#0d0d1a" stroke="#333" stroke-width="1"/>
+  <text x="80" y="292" fill="#00C9A7" font-size="12" font-family="'Consolas', monospace">$ vendor/bin/phpunit</text>
+  <text x="700" y="292" text-anchor="end" fill="#8b8fa3" font-size="10">Run encode/decode tests</text>
+
+  <!-- Command 3 -->
+  <rect x="60" y="315" width="680" height="35" rx="6" fill="#0d0d1a" stroke="#333" stroke-width="1"/>
+  <text x="80" y="337" fill="#FFD166" font-size="12" font-family="'Consolas', monospace">$ php artisan toon:convert tests/fixtures/data.json --encode --stats</text>
+  <text x="700" y="337" text-anchor="end" fill="#8b8fa3" font-size="10">Convert fixtures</text>
+
+  <!-- Command 4 -->
+  <rect x="60" y="360" width="680" height="35" rx="6" fill="#0d0d1a" stroke="#333" stroke-width="1"/>
+  <text x="80" y="382" fill="#FFD166" font-size="12" font-family="'Consolas', monospace">$ php artisan toon:convert fixtures/data.toon --decode --strict</text>
+  <text x="700" y="382" text-anchor="end" fill="#8b8fa3" font-size="10">Validate decode</text>
+
+  <!-- Command 5 -->
+  <rect x="60" y="405" width="680" height="35" rx="6" fill="#0d0d1a" stroke="#333" stroke-width="1"/>
+  <text x="80" y="427" fill="#00C9A7" font-size="12" font-family="'Consolas', monospace">$ composer audit</text>
+  <text x="700" y="427" text-anchor="end" fill="#8b8fa3" font-size="10">Security audit</text>
+
+  <!-- Footer -->
+  <text x="400" y="470" text-anchor="middle" fill="#6b6f83" font-size="11">Automate these checks in GitHub Actions, GitLab CI, or any CI/CD pipeline</text>
+
+  <!-- Brand -->
+  <image href="logo.webp" x="725" y="455" width="50" height="50" opacity="0.7"/>
+</svg>
+

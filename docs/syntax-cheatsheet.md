@@ -1,5 +1,9 @@
 # Syntax Cheatsheet
 
+<p align="center">
+  <img src="assets/diagrams/syntax_anatomy.png" alt="TOON Syntax Anatomy — Key Name, Row Count, Field Schema, Row Values" width="600">
+</p>
+
 This cheatsheet reflects the syntax supported by this Laravel package.
 
 ## Key Value Pairs

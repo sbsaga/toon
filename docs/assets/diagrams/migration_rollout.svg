@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 440" font-family="'Segoe UI', system-ui, -apple-system, sans-serif">
+  <defs>
+    <filter id="mSh"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.3"/></filter>
+  </defs>
+
+  <rect width="800" height="440" rx="12" fill="#1a1a2e"/>
+
+  <!-- Title -->
+  <text x="400" y="35" text-anchor="middle" fill="#ffffff" font-size="20" font-weight="700">Migration Rollout Strategy</text>
+  <text x="400" y="55" text-anchor="middle" fill="#8b8fa3" font-size="12">Safe upgrade path from legacy to modern mode</text>
+
+  <!-- Timeline -->
+  <line x1="100" y1="100" x2="700" y2="100" stroke="#333" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Phase 1 -->
+  <circle cx="150" cy="100" r="18" fill="#4361EE" filter="url(#mSh)"/>
+  <text x="150" y="105" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">1</text>
+  <text x="150" y="85" text-anchor="middle" fill="#4361EE" font-size="10" font-weight="600">UPGRADE</text>
+
+  <rect x="85" y="130" width="130" height="80" rx="8" fill="#4361EE" opacity="0.15" stroke="#4361EE" stroke-width="1"/>
+  <text x="150" y="150" text-anchor="middle" fill="#4361EE" font-size="11" font-weight="700">Install New Version</text>
+  <text x="150" y="168" text-anchor="middle" fill="#8b8fa3" font-size="10">composer update</text>
+  <text x="150" y="183" text-anchor="middle" fill="#8b8fa3" font-size="10">Keep legacy mode</text>
+  <text x="150" y="198" text-anchor="middle" fill="#00C9A7" font-size="10" font-weight="600">✓ Zero risk</text>
+
+  <!-- Phase 2 -->
+  <circle cx="300" cy="100" r="18" fill="#EF476F" filter="url(#mSh)"/>
+  <text x="300" y="105" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">2</text>
+  <text x="300" y="85" text-anchor="middle" fill="#EF476F" font-size="10" font-weight="600">TEST</text>
+
+  <rect x="235" y="130" width="130" height="80" rx="8" fill="#EF476F" opacity="0.15" stroke="#EF476F" stroke-width="1"/>
+  <text x="300" y="150" text-anchor="middle" fill="#EF476F" font-size="11" font-weight="700">Add Contract Tests</text>
+  <text x="300" y="168" text-anchor="middle" fill="#8b8fa3" font-size="10">Snapshot payloads</text>
+  <text x="300" y="183" text-anchor="middle" fill="#8b8fa3" font-size="10">Round-trip tests</text>
+  <text x="300" y="198" text-anchor="middle" fill="#00C9A7" font-size="10" font-weight="600">✓ Baseline set</text>
+
+  <!-- Phase 3 -->
+  <circle cx="450" cy="100" r="18" fill="#FFD166" filter="url(#mSh)"/>
+  <text x="450" y="105" text-anchor="middle" fill="#1a1a2e" font-size="12" font-weight="700">3</text>
+  <text x="450" y="85" text-anchor="middle" fill="#FFD166" font-size="10" font-weight="600">STAGING</text>
+
+  <rect x="385" y="130" width="130" height="80" rx="8" fill="#FFD166" opacity="0.15" stroke="#FFD166" stroke-width="1"/>
+  <text x="450" y="150" text-anchor="middle" fill="#FFD166" font-size="11" font-weight="700">Trial Modern Mode</text>
+  <text x="450" y="168" text-anchor="middle" fill="#8b8fa3" font-size="10">Staging only</text>
+  <text x="450" y="183" text-anchor="middle" fill="#8b8fa3" font-size="10">Compare outputs</text>
+  <text x="450" y="198" text-anchor="middle" fill="#00C9A7" font-size="10" font-weight="600">✓ Validate consumers</text>
+
+  <!-- Phase 4 -->
+  <circle cx="600" cy="100" r="18" fill="#00C9A7" filter="url(#mSh)"/>
+  <text x="600" y="105" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">4</text>
+  <text x="600" y="85" text-anchor="middle" fill="#00C9A7" font-size="10" font-weight="600">PRODUCTION</text>
+
+  <rect x="535" y="130" width="130" height="80" rx="8" fill="#00C9A7" opacity="0.15" stroke="#00C9A7" stroke-width="1"/>
+  <text x="600" y="150" text-anchor="middle" fill="#00C9A7" font-size="11" font-weight="700">Switch to Modern</text>
+  <text x="600" y="168" text-anchor="middle" fill="#8b8fa3" font-size="10">After sign-off</text>
+  <text x="600" y="183" text-anchor="middle" fill="#8b8fa3" font-size="10">Monitor metrics</text>
+  <text x="600" y="198" text-anchor="middle" fill="#00C9A7" font-size="10" font-weight="600">✓ Full modern</text>
+
+  <!-- Rollback section -->
+  <text x="400" y="250" text-anchor="middle" fill="#ffffff" font-size="15" font-weight="700">🔄 Rollback Plan (Configuration-First)</text>
+  <text x="400" y="268" text-anchor="middle" fill="#8b8fa3" font-size="11">If issues detected at any stage, rollback is config-only — no code removal needed</text>
+
+  <!-- Rollback steps -->
+  <rect x="60" y="285" width="330" height="40" rx="8" fill="#0d0d1a" stroke="#EF476F" stroke-width="1"/>
+  <text x="75" y="300" fill="#EF476F" font-size="12" font-weight="700">Step 1</text>
+  <text x="75" y="316" fill="#FFD166" font-size="11" font-family="'Consolas', monospace">'compatibility_mode' =&gt; 'legacy'</text>
+
+  <rect x="410" y="285" width="330" height="40" rx="8" fill="#0d0d1a" stroke="#EF476F" stroke-width="1"/>
+  <text x="425" y="300" fill="#EF476F" font-size="12" font-weight="700">Step 2</text>
+  <text x="425" y="316" fill="#8b8fa3" font-size="11">Disable new replacer transforms</text>
+
+  <rect x="60" y="335" width="330" height="40" rx="8" fill="#0d0d1a" stroke="#EF476F" stroke-width="1"/>
+  <text x="75" y="350" fill="#EF476F" font-size="12" font-weight="700">Step 3</text>
+  <text x="75" y="366" fill="#8b8fa3" font-size="11">Disable strict decode on non-critical paths</text>
+
+  <rect x="410" y="335" width="330" height="40" rx="8" fill="#0d0d1a" stroke="#EF476F" stroke-width="1"/>
+  <text x="425" y="350" fill="#EF476F" font-size="12" font-weight="700">Step 4</text>
+  <text x="425" y="366" fill="#8b8fa3" font-size="11">Re-run baseline payload tests</text>
+
+  <!-- Safety badge -->
+  <rect x="280" y="395" width="240" height="30" rx="15" fill="#00C9A7" opacity="0.15" stroke="#00C9A7" stroke-width="1"/>
+  <text x="400" y="415" text-anchor="middle" fill="#00C9A7" font-size="12" font-weight="700">🛡️ Safe by default — legacy is the default</text>
+
+  <!-- Brand -->
+  <image href="logo.webp" x="725" y="395" width="50" height="50" opacity="0.7"/>
+</svg>
+

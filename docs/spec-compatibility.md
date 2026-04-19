@@ -1,5 +1,9 @@
 # Format and Compatibility
 
+<p align="center">
+  <img src="assets/images/compatibility_modes.png" alt="Legacy vs Modern Mode" width="600">
+</p>
+
 ## What This Package Optimizes For
 
 This package is a Laravel-first TOON implementation focused on:
