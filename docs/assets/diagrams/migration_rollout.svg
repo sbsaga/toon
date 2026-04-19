@@ -82,6 +82,6 @@
   <text x="400" y="415" text-anchor="middle" fill="#00C9A7" font-size="12" font-weight="700">🛡️ Safe by default — legacy is the default</text>
 
   <!-- Brand -->
-  <circle cx="760" cy="425" r="10" fill="#EF476F" opacity="0.2"/>
-  <text x="760" y="429" text-anchor="middle" fill="#EF476F" font-size="8" font-weight="700">T</text>
+  <image href="logo.webp" x="725" y="395" width="50" height="50" opacity="0.7"/>
 </svg>
+

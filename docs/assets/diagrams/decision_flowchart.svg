@@ -109,7 +109,7 @@
   <!-- Footer -->
   <text x="400" y="570" text-anchor="middle" fill="#6b6f83" font-size="11">TOON for Laravel · sbsaga/toon</text>
 
-  <!-- Logo hint -->
-  <circle cx="755" cy="580" r="15" fill="#EF476F" opacity="0.2"/>
-  <text x="755" y="585" text-anchor="middle" fill="#EF476F" font-size="10" font-weight="700">T</text>
+  <!-- Brand -->
+  <image href="logo.webp" x="720" y="555" width="50" height="50" opacity="0.7"/>
 </svg>
+

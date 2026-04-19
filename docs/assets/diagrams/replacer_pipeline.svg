@@ -94,6 +94,6 @@
   <text x="120" y="370" fill="#8b8fa3" font-size="11" font-family="'Consolas', monospace">});</text>
 
   <!-- Branding -->
-  <circle cx="760" cy="385" r="10" fill="#EF476F" opacity="0.2"/>
-  <text x="760" y="389" text-anchor="middle" fill="#EF476F" font-size="8" font-weight="700">T</text>
+  <image href="logo.webp" x="725" y="355" width="50" height="50" opacity="0.7"/>
 </svg>
+
