@@ -1,0 +1,21 @@
+# Auto-detect line endings
+* text=auto
+
+# Exclude from Composer dist archive
+/.git                   export-ignore
+/.github                export-ignore
+/.gitignore             export-ignore
+/.phpunit.result.cache  export-ignore
+
+/assets                 export-ignore
+/benchmarks             export-ignore
+/docs                   export-ignore
+/examples               export-ignore
+/tests                  export-ignore
+
+/CHANGELOG.md           export-ignore
+/CONTRIBUTING.md        export-ignore
+/SECURITY.md            export-ignore
+/TOON_PROJECT_ANALYSIS.md  export-ignore
+/phpunit.xml.dist       export-ignore
+/composer.lock          export-ignore
